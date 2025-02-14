@@ -15,6 +15,232 @@ internal_variables = []
 user_variables = []
 
 
+def start_osc_client(network_config):
+    """Start a new OSC server and client to connect to the console"""
+    try:
+        osc_client = udp_client.SimpleUDPClient(network_config[0], int(network_config[1]))
+        osc_client.send_message("/eos/ping", "macroPlus")
+        return osc_client
+    except ValueError:
+        print("Bad config")
+        return "Invalid network config. Try again."
+
+
+def load_macros():
+    """Load macros config from XML file"""
+    # Open and read the macro config file
+    with open("config/macros.xml", "r") as macro_file:
+        macro_tree = ET.parse(macro_file)
+
+    # Parse the macros from the freshly-read file
+    macro_root = macro_tree.getroot()
+    macro_list = macro_root.findall("macro")
+
+    return macro_list
+
+
+def parse_macros(macro_list):
+    # Generate the information for the macro list on the page
+    main_macro_list = []
+    for macro in macro_list:
+        # Open the macro's file and pull in the relevant trigger and action
+        try:
+            with open(macro.find("path").text, "r") as macro_file:
+                macro_action = macro_file.read()
+        except FileNotFoundError:
+            macro_action = ""
+        # Make a dictionary with the information about the macro
+        macro_dict = {"uuid": macro.find("uuid").text,
+                      "name": macro.find("name").text,
+                      "trigger_type": macro.find("trigger_type").text,
+                      "trigger": macro.find("trigger").text,
+                      "arg_index": macro.find("arg_index").text,
+                      "action": macro_action}
+        # Make that dictionary the value of the macro's entry in the main list
+        main_macro_list.append(macro_dict)
+
+    return main_macro_list
+
+
+def add_user_macro(name, trigger, action, uuid, arg_index=0, path=""):
+    """Add a new user macro to user_macros"""
+    global user_macros
+    user_macros.append(Macro(name, trigger, action, uuid, arg_index))
+
+    if path != "":
+        # This is a brand new macro, add it to the XML tree and write to the file
+        # Open and read the macro config file
+        with open("config/macros.xml", "r") as macro_file:
+            macro_tree = ET.parse(macro_file)
+
+            macro_root = macro_tree.getroot()
+
+            new_macro_element = ET.SubElement(macro_root, "macro")
+            new_uuid = ET.SubElement(new_macro_element, "uuid")
+            new_uuid.text = uuid
+            new_name = ET.SubElement(new_macro_element, "name")
+            new_name.text = name
+            new_path = ET.SubElement(new_macro_element, "path")
+            new_path.text = "config/macros/%s.txt" % uuid
+            new_trigger_type = ET.SubElement(new_macro_element, "trigger_type")
+            new_trigger_type.text = trigger.split(" ")[0].lower()
+            new_trigger = ET.SubElement(new_macro_element, "trigger")
+            new_trigger.text = "".join(trigger.split(" ")[1:])
+            new_arg_index = ET.SubElement(new_macro_element, "arg_index")
+            new_arg_index.text = str(arg_index)
+
+            # Write the macro config file
+            macro_tree.write("config/macros.xml")
+
+            # Write the macro's action file
+            with open(path, "w+") as macro_action_file:
+                macro_action_file.write("".join(action))
+
+
+def delete_user_macro(macro_uuid):
+    """Delete a user macro from the XML config file, and remove its action file."""
+    global user_macros
+    with open("config/macros.xml", "r") as macro_file:
+        macro_tree = ET.parse(macro_file)
+        macro_root = macro_tree.getroot()
+
+    all_macros = macro_root.findall("macro")
+    for macro in all_macros:
+        if macro.find("uuid").text == macro_uuid:
+            os.remove(macro.find("path").text)
+            macro_root.remove(macro)
+
+            break
+
+    macro_tree.write("config/macros.xml")
+
+    # Delete the macro from user_macros
+    for i in range(len(user_macros)):
+        if user_macros[i].uuid == macro_uuid:
+            user_macros.pop(i)
+            break
+
+
+def add_internal_macro(name, trigger, action, uuid, arg_index=0):
+    """Add a new user macro to internal_macros"""
+    global internal_macros
+    intermal_macros.append(Macro(name, trigger, action, uuid, arg_index))
+
+
+def delete_internal_macro(macro_uuid):
+    """Delete an internal macro from the list"""
+    global internal_macros
+
+    # Delete the macro from internal_macros
+    for i in range(len(internal_macros)):
+        if internal_macros[i].uuid == macro_uuid:
+            internal_macros.pop(i)
+            break
+
+
+def load_variables():
+    """Load user variables from config file."""
+    # Open and read the macro config file
+    with open("config/variables.xml", "r") as variable_file:
+        variable_tree = ET.parse(variable_file)
+
+        # Parse the variables from the freshly-read file
+        variable_root = variable_tree.getroot()
+        variable_list = variable_root.findall("variable")
+
+        return variable_list
+
+
+def add_user_variable(variable_name, variable_value):
+    """Add a new user variable with the given name and value"""
+    global user_variables
+    print("Adding variable ", variable_name)
+
+    # Check that variable is not a duplicate of an existing user_variable
+    add_variable = True
+    for variable in user_variables:
+        print(variable.name, variable_name)
+        if variable.name == variable_name:
+            print("Duplicate!!!!")
+            add_variable = False
+            break
+
+    if add_variable:
+        # If the variable is not a duplicate, add it to the list and the XML config
+        user_variables.append(InternalVar(variable_name, variable_value))
+
+        with open("config/variables.xml", "r") as variable_file:
+            variable_tree = ET.parse(variable_file)
+            variable_root = variable_tree.getroot()
+            variable_list = variable_root.findall("variable")
+
+            exists_in_config = False
+
+            for variable in variable_list:
+                if variable.find("name").text == variable_name:
+                    # Variable already exists in XML, we're probably pulling it from there.
+                    exists_in_config = True
+
+            if not exists_in_config:
+                new_variable = ET.SubElement(variable_root, "variable")
+                new_variable_name = ET.SubElement(new_variable, "name")
+                new_variable_name.text = variable_name
+                new_variable_value = ET.SubElement(new_variable, "value")
+                new_variable_value.text = variable_value
+
+                variable_tree.write("config/variables.xml")
+
+
+def delete_user_variable(variable_name):
+    """Delete the user variable with the given name."""
+    global user_variables
+    for i in range(len(user_variables)):
+        if user_variables[i].name == variable_name:
+            user_variables.pop(i)
+
+    with open("config/variables.xml", "r") as variable_file:
+        variable_tree = ET.parse(variable_file)
+        variable_root = variable_tree.getroot()
+        variable_list = variable_root.findall("variable")
+
+        for variable in variable_list:
+            if variable.find("name").text == variable_name:
+                variable_root.remove(variable)
+                break
+
+        variable_tree.write("config/variables.xml")
+
+
+def get_user_variable(variable_name):
+    """Get the value of the specified user variable, or return None if the variable does not exist."""
+    global user_variables
+    for variable in user_variables:
+        if variable.name == variable_name:
+            return variable.var_value
+
+    # If the variable doesn't exist, return None
+    return None
+
+
+def set_user_variable(variable_name, new_value):
+    """Set a user variable to a new value"""
+    global user_variables
+    for variable in user_variables:
+        if variable.name == variable_name:
+            variable.set_value(new_value)
+
+    with open("config/variables.xml", "r") as variable_file:
+        variable_tree = ET.parse(variable_file)
+        variable_root = variable_tree.getroot()
+        variable_list = variable_root.findall("variable")
+
+        for variable in variable_list:
+            if variable.find("name").text == variable_name:
+                variable.find("value").text = new_value
+
+        variable_tree.write("config/variables.xml")
+
+
 class ScriptInterpreter:
     """Handles all interpreting for macro actions."""
 
@@ -25,7 +251,8 @@ class ScriptInterpreter:
 class Macro:
     """Holds macro trigger and action."""
 
-    def __init__(self, trigger: str, action: list, uuid: str, requested_arg=0, arg_input=""):
+    def __init__(self, name, trigger: str, action: list, uuid: str, requested_arg=0, arg_input=""):
+        self.name = name
         self.trigger = trigger
         self.action = action
         self.uuid = uuid
@@ -55,6 +282,7 @@ class Macro:
                 # Run through list in reverse
                 query = eos_queries[len(eos_queries) - i]
                 # TODO: Create a way to determine the osc command for a given query, and the argument to read to set it.
+                name = ""
                 trigger = ""
                 new_var_name = "eos_query_%i" % i
                 osc_arg_num = ""
@@ -65,8 +293,7 @@ class Macro:
                 else:
                     action = ["new %s %s" % (new_var_name, osc_arg_num), "osc %s" % last_osc]
 
-                new_internal_macro = Macro(trigger, action, self.uuid)
-                internal_macros.append(new_internal_macro)
+                add_internal_macro(name, action, trigger, self.uuid)
 
                 if i == len(eos_queries):
                     # Done adding macros, send the osc message to start it all
@@ -232,30 +459,26 @@ with open("config/network_settings.xml", "r") as file:
         console_network_config = ["", "", ""]
 
 with open("config/macros.xml", "r") as file:
-    macro_tree = ET.parse(file)
+    macro_list = load_macros()
 
     # Make a macro object for each macro loaded
-    # Parse the macros from the freshly-read file
-    macro_root = macro_tree.getroot()
-    macro_list = macro_root.findall("macro")
-
     for macro in macro_list:
+        name = macro.find("name").text
         trigger = macro.find("trigger_type").text + " " + macro.find("trigger").text
+        macro_uuid = macro.find("uuid").text
         with open(macro.find("path").text, "r") as action_file:
             action = action_file.readlines()
 
         # Append the new macro to user_macros
-        user_macros.append(Macro(trigger, action, macro.find("uuid").text))
+        add_user_macro(name, trigger, action, macro_uuid)
 
 with open("config/variables.xml", "r") as file:
     # Load user variables
-    variable_tree = ET.parse(file)
-    variable_root = variable_tree.getroot()
-    variable_list = variable_root.findall("variable")
+    variable_list = load_variables()
 
     # Make a variable object for each variable loaded
     for variable in variable_list:
-        user_variables.append(InternalVar(variable.find("name").text, variable.find("value").text))
+        add_user_variable(variable.find("name").text, variable.find("value").text)
 
 # Initialize dynamic variables
 dynamic_variables = {
@@ -273,21 +496,13 @@ dynamic_variables = {
 # Flask setup
 app = Flask(__name__)
 
-
 # Home page
 @app.route("/", methods=["POST", "GET"])
 def index():
-
     """Load existing macros and pass them to the page."""
     global macro_tree, user_macros, internal_macros
 
-    # Re-open and read file when the page is reloaded
-    with open("config/macros.xml", "r") as macro_file:
-        macro_tree = ET.parse(macro_file)
-
-    # Parse the macros from the freshly-read file
-    macro_root = macro_tree.getroot()
-    macro_list = macro_root.findall("macro")
+    macro_list = load_macros()
 
     if request.method == "GET":
         main_macro_list = parse_macros(macro_list)
@@ -315,7 +530,7 @@ def index():
             new_macro_action = request.form["macro_action"].split("\n")
 
             # Set all loaded XML values to the new data
-            all_macros = macro_root.findall("macro")
+            all_macros = load_macros()
             found_macro = False
             for macro in all_macros:
                 if macro.find("uuid").text == macro_uuid_to_update:
@@ -343,51 +558,19 @@ def index():
                     break
 
             if not found_macro:
-                # Macro is new, add a new entry to the tree and write a new config file to store the action.
-                new_macro_element = ET.SubElement(macro_root, "macro")
-                new_uuid = ET.SubElement(new_macro_element, "uuid")
-                new_uuid.text = macro_uuid_to_update
-                new_name = ET.SubElement(new_macro_element, "name")
-                new_name.text = new_macro_name
-                new_path = ET.SubElement(new_macro_element, "path")
-                new_path.text = "config/macros/%s.txt" % macro_uuid_to_update
-                new_trigger_type = ET.SubElement(new_macro_element, "trigger_type")
-                new_trigger_type.text = new_macro_trigger_type
-                new_trigger = ET.SubElement(new_macro_element, "trigger")
-                new_trigger.text = new_macro_trigger
-                new_arg_index = ET.SubElement(new_macro_element, "arg_index")
-                new_arg_index.text = new_macro_arg_index
-
-                with open(new_path.text, "w+") as macro_file:
-                    macro_file.write("".join(new_macro_action))
-
                 # Add the new macro to user_macros
-                user_macros.append(Macro(new_macro_trigger, new_macro_action, macro_uuid_to_update, new_macro_arg_index))
+                add_user_macro(new_macro_name, " ".join([new_macro_trigger_type, new_macro_trigger]),
+                               new_macro_action, macro_uuid_to_update,
+                               arg_index=new_macro_arg_index, path="config/macros/%s.txt" % macro_uuid_to_update)
 
-            macro_tree.write("config/macros.xml")
-
-            macro_list = macro_root.findall("macro")
+            macro_list = load_macros()
             main_macro_list = parse_macros(macro_list)
 
         elif request.form["submit_macro"] == "Delete Macro":
             # Find the macro with the matching UUID and delete it from the config completely
-            all_macros = macro_root.findall("macro")
-            for macro in all_macros:
-                if macro.find("uuid").text == request.form["macro_uuid"]:
-                    os.remove(macro.find("path").text)
-                    macro_root.remove(macro)
+            delete_user_macro(request.form["macro_uuid"])
 
-                    break
-
-            macro_tree.write("config/macros.xml")
-
-            # Delete the macro from user_macros
-            for i in range(len(user_macros)):
-                if user_macros[i].uuid == request.form["macro_uuid"]:
-                    user_macros.pop(i)
-                    break
-
-            macro_list = macro_root.findall("macro")
+            macro_list = load_macros()
             main_macro_list = parse_macros(macro_list)
 
     return render_template("index.html", macro_list=main_macro_list, new_uuid=str(uuid.uuid4()))
@@ -519,7 +702,6 @@ def variables():
     global dynamic_variables
     if request.method == "GET":
         # Load the page, displaying variables
-
         dynamic_variables_list = []
         for item in dynamic_variables.items():
             dynamic_variables_list.append([item[0], getattr(item[1], "var_value")])
@@ -530,87 +712,21 @@ def variables():
         # Variable is being updated
         if request.form["submit_variable"] == "Add":
             # Add only if it isn't a duplicate
-            add_variable = True
-            for variable in user_variables:
-                if variable.name == request.form["variable_name"]:
-                    add_variable = False
-                    break
-
-            if add_variable:
-                user_variables.append(InternalVar(request.form["variable_name"], request.form["variable_value"]))
-
-                new_variable = ET.SubElement(variable_root, "variable")
-                new_variable_name = ET.SubElement(new_variable, "name")
-                new_variable_name.text = request.form["variable_name"]
-                new_variable_value = ET.SubElement(new_variable, "value")
-                new_variable_value.text = request.form["variable_value"]
-
-                variable_tree.write("config/variables.xml")
+            add_user_variable(request.form["variable_name"], request.form["variable_value"])
 
         elif request.form["submit_variable"] == "Delete":
             # Delete the variable
-            for i in range(len(user_variables)):
-                if user_variables[i].name == request.form["variable_name"]:
-                    user_variables.pop(i)
+            delete_user_variable(request.form["variable_name"])
 
-            variable_list = variable_root.findall("variable")
-            for variable in variable_list:
-                if variable.find("name").text == request.form["variable_name"]:
-                    variable_root.remove(variable)
-                    break
-
-            variable_tree.write("config/variables.xml")
         else:
-            for variable in user_variables:
-                if variable.name == request.form["variable_name"]:
-                    variable.set_value(request.form["variable_value"])
+            # Set the variable to a new value
+            set_user_variable(request.form["variable_name"], request.form["variable_value"])
 
-            variable_list = variable_root.findall("variable")
-            for variable in variable_list:
-                if variable.find("name").text == request.form["variable_name"]:
-                    variable.find("value").text = request.form["variable_value"]
-
-            variable_tree.write("config/variables.xml")
-
-            dynamic_variables_list = []
-            for item in dynamic_variables.items():
-                dynamic_variables_list.append([item[0], getattr(item[1], "var_value")])
+        dynamic_variables_list = []
+        for item in dynamic_variables.items():
+            dynamic_variables_list.append([item[0], getattr(item[1], "var_value")])
 
         return render_template("variables.html", user_variables=user_variables, dynamic_variables=dynamic_variables_list)
-
-
-def start_osc_client(network_config):
-    """Start a new OSC server and client to connect to the console"""
-    try:
-        osc_client = udp_client.SimpleUDPClient(network_config[0], int(network_config[1]))
-        osc_client.send_message("/eos/ping", "macroPlus")
-        return osc_client
-    except ValueError:
-        print("Bad config")
-        return "Invalid network config. Try again."
-
-
-def parse_macros(macro_list):
-    # Generate the information for the macro list on the page
-    main_macro_list = []
-    for macro in macro_list:
-        # Open the macro's file and pull in the relevant trigger and action
-        try:
-            with open(macro.find("path").text, "r") as macro_file:
-                macro_action = macro_file.read()
-        except FileNotFoundError:
-            macro_action = ""
-        # Make a dictionary with the information about the macro
-        macro_dict = {"uuid": macro.find("uuid").text,
-                      "name": macro.find("name").text,
-                      "trigger_type": macro.find("trigger_type").text,
-                      "trigger": macro.find("trigger").text,
-                      "arg_index": macro.find("arg_index").text,
-                      "action": macro_action}
-        # Make that dictionary the value of the macro's entry in the main list
-        main_macro_list.append(macro_dict)
-
-    return main_macro_list
 
 
 if __name__ == "__main__":
