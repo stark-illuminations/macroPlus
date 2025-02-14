@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Variables</title>
+{% endblock %}
+{% block body %}
+    <div id="user_variable_list">
+        <h2>User Variables</h2>
+        <form action="/variables" method="POST" id=new_variable name="variable_editor">
+                <label for="new_variable_name">Name: </label>
+                <input type="text" id="new_variable_name" name="variable_name" value="">
+            <label for="new_variable_value">Value: </label>
+                <input type="text" id="new_variable_value" name="variable_value" value="">
+                <input type="submit" id="new_variable_submit" name="submit_variable" value="Add">
+            </form>
+        {% for variable in user_variables %}
+            <form action="/variables" method="POST" id={{variable['name']}} name="variable_editor">
+                <label for="{{variable['name']}}">{{variable['name']}}</label>
+                <input type="text" id="{{variable['name']}}_value" name="variable_value" value="{{variable['value']}}">
+                <input type="text" id="{{variable['name']}}_name" name="variable_name" value="{{variable['name']}}" class="hidden">
+                <input type="submit" id="{{variable['name']}}_submit" name="submit_variable" value="Update">
+                <input type="submit" id="{{variable['name']}}_delete" name="submit_variable" value="Delete">
+            </form>
+        {% endfor %}
+    </div>
+    <div id="dynamic_variable_list">
+        <h2>Dynamic Variables</h2>
+            <label for="dynamic_cue">{{dynamic_variables[0][0]}}</label>
+            <input type="text" id="dynamic_cue" name="dynamic_cue" value="{{dynamic_variables[0][1]}}"><br>
+            <label for="dynamic_list">{{dynamic_variables[1][0]}}</label>
+            <input type="text" id="dynamic_list" name="dynamic_list" value="{{dynamic_variables[1][1]}}"><br>
+            <label for="dynamic_listcue">{{dynamic_variables[2][0]}}</label>
+            <input type="text" id="dynamic_listcue" name="dynamic_listcue" value="{{dynamic_variables[2][1]}}"><br>
+            <label for="dynamic_sel">{{dynamic_variables[3][0]}}</label>
+            <input type="text" id="dynamic_sel" name="dynamic_sel" value="{{dynamic_variables[3][1]}}"><br>
+            <label for="dynamic_time">{{dynamic_variables[4][0]}}</label>
+            <input type="text" id="dynamic_time" name="dynamic_time" value="{{dynamic_variables[4][1]}}"><br>
+            <label for="dynamic_filename">{{dynamic_variables[5][0]}}</label>
+            <input type="text" id="dynamic_filename" name="dynamic_filename" value="{{dynamic_variables[5][1]}}"><br>
+            <label for="dynamic_live">{{dynamic_variables[6][0]}}</label>
+            <input type="text" id="dynamic_live" name="dynamic_live" value="{{dynamic_variables[6][1]}}"><br>
+            <label for="dynamic_blind">{{dynamic_variables[7][0]}}</label>
+            <input type="text" id="dynamic_blind" name="dynamic_blind" value="{{dynamic_variables[7][1]}}"><br>
+            <label for="dynamic_staging">{{dynamic_variables[8][0]}}</label>
+            <input type="text" id="dynamic_staging" name="dynamic_staging" value="{{dynamic_variables[8][1]}}"><br>
+    </div>
+    <div id="internal_variable_list">
+        <h2>Internal Variables</h2>
+    </div>
+{% endblock %}

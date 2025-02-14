@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Home</title>
+{% endblock %}
+
+{% block body %}
+    <div id="macro_list">
+        <h2>Current Macros</h2>
+        <div class="macro_button" id=new_macro_button>Add New Macro</div>
+        {% for macro in macro_list %}
+            <div class="macro_button" id={{macro["uuid"]}}>{{macro["name"]}}</div>
+        {% endfor %}
+    </div>
+    <div id="macro_editor">
+        <div class="editor_box hidden" id=new_macro_button_editor>
+                <h2>New Macro</h2>
+                <h3>{{new_uuid}}</h3>
+                <form action="/" method="POST" id=new_macro_form name="macro_editor">
+                    <input type="submit" id="new_macro_submit" name="submit_macro" value="Add Macro"><br>
+                    <label for="new_macro_name">Name: </label>
+                    <input type="text" id="new_macro_name" name="macro_name" value="" required><br>
+                    <label for="new_macro_uuid">UUID: </label>
+                    <input type="text" id="new_macro_uuid" name="macro_uuid" value="{{new_uuid}}" readonly><br>
+                    <label for="new_macro_trigger">Trigger: </label>
+                    <input type="text" id="new_macro_trigger" name="macro_trigger" value=""><br>
+                    <label for="new_macro_arg_index">OSC Argument Input Index: </label>
+                    <input type="text" id="new_macro_arg_index" name="macro_arg_index" value=""><br>
+                    <label for="new_macro_action">Action: </label>
+                    <textarea cols="85" rows="29" id="new_macro_action" name="macro_action"></textarea>
+                </form>
+            </div>
+        {% for macro in macro_list %}
+            <div class="editor_box hidden" id={{macro["uuid"]}}_editor>
+                <h2>{{macro["name"]}}</h2>
+                <h3>{{macro["uuid"]}}</h3>
+                <form action="/" method="POST" id={{macro["uuid"]}}_form name="macro_editor">
+                    <input type="submit" id="{{macro['uuid']}}_submit" name="submit_macro" value="Update Macro">
+                    <input type="submit" id="{{macro['uuid']}}_delete" name="submit_macro" value="Delete Macro">
+                    <input type="submit" id="{{macro['uuid']}}_duplicate" name="submit_macro" value="Duplicate Macro"><br>
+                    <label for="{{macro['uuid']}}_name">Name: </label>
+                    <input type="text" id="{{macro['uuid']}}_name" name="macro_name" value="{{macro['name']}}" required><br>
+                    <label for="{{macro['uuid']}}_uuid">UUID: </label>
+                    <input type="text" id="{{macro['uuid']}}_uuid" name="macro_uuid" value="{{macro['uuid']}}" readonly><br>
+                    <label for="{{macro['uuid']}}_trigger">Trigger: </label>
+                    <input type="text" id="{{macro['uuid']}}_trigger" name="macro_trigger" value="{{macro['trigger_type']}} {{macro['trigger']}}"><br>
+                    <label for="{{macro['uuid']}}_arg_index">OSC Argument Input Index: </label>
+                    <input type="text" id="{{macro['uuid']}}_arg_index" name="macro_arg_index" value="{{macro['arg_index']}}"><br>
+                    <label for="{{macro['uuid']}}_action">Action: </label>
+                    <textarea cols="85" rows="29" id="{{macro['uuid']}}_action" name="macro_action">{{macro['action']}}</textarea>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

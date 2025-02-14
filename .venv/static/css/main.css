@@ -1,0 +1,52 @@
+body {
+    background-color: #5A5475;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    color: white;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+div {
+    margin: 10px;
+    padding: 10px;
+    background-color: #6A5495;
+    border: 5px solid #883388;
+    border-radius: 20px;
+}
+
+.macro_button {
+    background-color: #5B3485;
+}
+
+.hidden {
+    display: none;
+}
+
+#navbar {
+    background-color: #f9d9ff;
+    color: #547fff;
+    display: flex;
+    border-radius: 20px;
+    padding: 0px;
+    border: none;
+}
+
+#navbar > a {
+    padding: 20px;
+    background-color: #FCACFF;
+    display: flex;
+    margin: 5px;
+    border-radius: 20px;
+}
+
+#macro_list {
+    width: 46%;
+    float: left;
+}
+
+#macro_editor {
+    width: 46%;
+    float: right;
+    height:
+}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Network Config</title>
+{% endblock %}
+
+{% block body %}
+    <div id="network_setup">
+    <h2>Network settings</h2>
+    {% if console_network is defined %}
+            <h3>{{ console_network[2] }}</h3>
+    {% else %}
+        <p>Please configure console network settings.</p>
+    {% endif %}
+
+    <form action="/network_config" method="POST" id="network_settings" name="network_settings">
+        <label for="console_ip">Console IP: </label>
+        <input type="text" id="console_ip" name="console_ip" value={{ console_network[0] }}><br>
+        <label for="console_port">Console Port: </label>
+        <input type="text" id="console_port" name="console_port" value={{ console_network[1] }}><br>
+        <input type="submit" value="Update Config" name="submit">
+    </form>
+    </div>
+    <div id="network_test">
+        <form action="/network_config" method="POST" id="ping_form" name="ping_button">
+            <input type="submit" value="Ping Console" name="submit">
+        </form>
+        <br>
+        <form action="/network_config" method="POST" id="custom_osc_form" name="custom_osc">
+            <label for="custom_osc_address">Custom OSC Address</label>
+            <input type="text" id="custom_osc_address" name="custom_osc_address" value="/eos/"><br>
+            <label for="custom_osc_arguments">Custom OSC Arguments</label>
+            <input type="text" id="custom_osc_arguments" name="custom_osc_arguments" value=""><br>
+            <input type="submit" value="Send OSC" name="submit">
+        </form>
+    </div>
+
+
+{% endblock %}
