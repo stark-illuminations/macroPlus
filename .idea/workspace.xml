@@ -7,7 +7,8 @@
     <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Initial commit. Web interface functions, simple OSC send and receive functions, user macros exist but do not function, user and dynamic variables exist.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.venv/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.venv/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/templates/variables.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,8 +18,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -72,7 +73,7 @@
     "Python.osc_server.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "scripting__base"
+    "git-widget-placeholder": "refactor__app"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -158,11 +159,20 @@
       <option name="project" value="LOCAL" />
       <updated>1739554400833</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Implemented scripting language, OSC and cue triggers for user macros.">
+      <option name="closed" value="true" />
+      <created>1739682059530</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1739682059530</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit. Web interface functions, simple OSC send and receive functions, user macros exist but do not function, user and dynamic variables exist." />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit. Web interface functions, simple OSC send and receive functions, user macros exist but do not function, user and dynamic variables exist." />
+    <MESSAGE value="Implemented scripting language, OSC and cue triggers for user macros." />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented scripting language, OSC and cue triggers for user macros." />
   </component>
 </project>

@@ -6,7 +6,7 @@
 {% block body %}
     <div id="user_variable_list">
         <h2>User Variables</h2>
-        <form action="/variables" method="POST" id=new_variable name="variable_editor">
+        <form action="/variable_console" method="POST" id=new_variable name="variable_editor">
                 <label for="new_variable_name">Name: </label>
                 <input type="text" id="new_variable_name" name="variable_name" value="">
             <label for="new_variable_value">Value: </label>
@@ -14,7 +14,7 @@
                 <input type="submit" id="new_variable_submit" name="submit_variable" value="Add">
             </form>
         {% for variable in user_variables %}
-            <form action="/variables" method="POST" id={{variable['name']}} name="variable_editor">
+            <form action="/variable_console" method="POST" id={{variable['name']}} name="variable_editor">
                 <label for="{{variable['name']}}">{{variable['name']}}</label>
                 <input type="text" id="{{variable['name']}}_value" name="variable_value" value="{{variable['var_value']}}">
                 <input type="text" id="{{variable['name']}}_name" name="variable_name" value="{{variable['name']}}" class="hidden">
