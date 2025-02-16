@@ -7,7 +7,7 @@
     <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Initial commit. Web interface functions, simple OSC send and receive functions, user macros exist but do not function, user and dynamic variables exist.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.venv/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.venv/templates/variables.html" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/templates/variables.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +72,7 @@
     "Python.osc_server.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "refactor__xml"
+    "git-widget-placeholder": "scripting__base"
   }
 }]]></component>
   <component name="RecentsManager">
