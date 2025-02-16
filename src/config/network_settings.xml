@@ -1,0 +1,6 @@
+<network_settings>
+    <console>
+        <ip>127.0.0.1</ip>
+        <port>8000</port>
+    </console>
+</network_settings>

@@ -1,0 +1,3 @@
+<macro_list>
+    <macro><uuid>d09b6a05-bccb-44b9-86dd-47a8d5601cea</uuid><name>Start Vor</name><path>config/macros/d09b6a05-bccb-44b9-86dd-47a8d5601cea.txt</path><trigger_type>cue</trigger_type><trigger>90</trigger><arg_index>4</arg_index></macro><macro><uuid>d47738c5-61d4-4ef3-b008-47c3d64ceb5c</uuid><name>Stop Vor</name><path>config/macros/d47738c5-61d4-4ef3-b008-47c3d64ceb5c.txt</path><trigger_type>osc</trigger_type><trigger>/eos/out/ping</trigger><arg_index>2</arg_index></macro>
+<macro><uuid>f95d74dd-56e7-4931-8970-e1c57d1f3500</uuid><name>Test</name><path>config/macros/f95d74dd-56e7-4931-8970-e1c57d1f3500.txt</path><trigger_type>osc</trigger_type><trigger>/1/2/3</trigger><arg_index>
