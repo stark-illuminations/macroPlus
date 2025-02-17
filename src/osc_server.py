@@ -10,7 +10,6 @@ flask_url = "http://127.0.0.1:%s/osc" % flask_port
 def eos_out(addr, *args):
     """Handle Eos OSC messages and send them to Flask"""
     global flask_url
-    print(addr, args)
 
     headers = {
         'Content-type': 'application/json',
@@ -21,6 +20,8 @@ def eos_out(addr, *args):
     osc_json = {"address": addr, "args": json.dumps(args)}
 
     requests.post(flask_url, json=osc_json)
+
+    return (osc_json["address"], osc_json["args"])
 
 
 def start_osc_server():
@@ -33,6 +34,6 @@ def start_osc_server():
 
     return server
 
-
-osc_listener = start_osc_server()
-osc_listener.serve_forever()
+if __name__ == "__main__":
+    osc_listener = start_osc_server()
+    osc_listener.serve_forever()

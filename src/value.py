@@ -2,7 +2,7 @@ import math
 import re
 
 
-def parse_value(script_word, debug=False):
+def parse_value(script_word: str | int | float | bool, debug=False):
     """Parse a raw value and return the result."""
     if debug:
         print("- Word appears to be a raw value. Attempting to interpret...")
@@ -15,6 +15,8 @@ def parse_value(script_word, debug=False):
         if debug:
             print("-- Word is boolean False.")
         return False
+    elif script_word is None:
+        return None
     else:
         try:
             if math.isclose(float(script_word), round(float(script_word))):
@@ -50,7 +52,8 @@ def parse_script_word(script_word, internal_variables, user_variables, dynamic_v
                 if variable.name == script_word:
                     # Return the internal variable's value
                     if debug:
-                        print("-- Variable match found: %s. Returning value: %s" % (variable.name, str(variable.var_value)))
+                        print("-- Variable match found: %s. Returning value: %s" % (
+                        variable.name, str(variable.var_value)))
                     return variable.var_value
             # If the variable wasn't found, return None
             if debug:
@@ -66,7 +69,8 @@ def parse_script_word(script_word, internal_variables, user_variables, dynamic_v
                 if variable.name == script_word:
                     # Return the dynamic variable's value
                     if debug:
-                        print("-- Variable match found: %s. Returning value: %s" % (variable.name, str(variable.var_value)))
+                        print("-- Variable match found: %s. Returning value: %s" % (
+                        variable.name, str(variable.var_value)))
                     return variable.var_value
             # If the variable wasn't found, return None
             if debug:
@@ -82,7 +86,8 @@ def parse_script_word(script_word, internal_variables, user_variables, dynamic_v
                 if variable.name == script_word:
                     # Return the user variable's value
                     if debug:
-                        print("-- Variable match found: %s. Returning value: %s" % (variable.name, str(variable.var_value)))
+                        print("-- Variable match found: %s. Returning value: %s" % (
+                        variable.name, str(variable.var_value)))
                     return variable.var_value
             # If the variable wasn't found, return None
             if debug:
@@ -98,7 +103,7 @@ def parse_script_word(script_word, internal_variables, user_variables, dynamic_v
             except ValueError:
                 if debug:
                     print("-- Argument index was not an integer. Returning None.")
-                    return None
+                return None
 
             try:
                 return arg_input[script_word]

@@ -22,17 +22,16 @@ internal_macros = []
 
 user_variables = []
 internal_variables = []
-dynamic_variables = {
-    "%cue%": variables.InternalVar("%cue%", ""),
-    "%list%": variables.InternalVar("%list%", ""),
-    "%listcue%": variables.InternalVar("%listcue%", ""),
-    "%sel%": variables.InternalVar("%sel%", ""),
-    "%filename%": variables.InternalVar("%filename%", ""),
-    "%time%": variables.InternalVar("%time%", ""),
-    "%live%": variables.InternalVar("%live%", ""),
-    "%blind%": variables.InternalVar("%blind%", ""),
-    "%staging%": variables.InternalVar("%staging%", "")
-}
+dynamic_variables = [variables.InternalVar("%cue%", ""),
+                     variables.InternalVar("%list%", ""),
+                     variables.InternalVar("%listcue%", ""),
+                     variables.InternalVar("%sel%", ""),
+                     variables.InternalVar("%filename%", ""),
+                     variables.InternalVar("%time%", ""),
+                     variables.InternalVar("%live%", ""),
+                     variables.InternalVar("%blind%", ""),
+                     variables.InternalVar("%staging%", "")
+                     ]
 
 def process_cue_number(raw_cue_number: list):
     """Process a user-written cue number string and return a list/cue formatted string."""
@@ -115,8 +114,6 @@ def initialize_config(console_network_config, osc_client, user_macros, user_vari
             user_variables = variables.add_user_variable(variable.find("name").text, variable.find("value").text, user_variables)
 
     return console_network_config, osc_client, user_macros, user_variables
-
-# Initialize dynamic variables
 
 # Flask setup
 app = Flask(__name__)
@@ -234,11 +231,13 @@ def network_config():
             if osc_client:
                 # If the console is configured, ping it
                 print("Pinging")
-                osc.process_osc(osc_client, "/eos/ping", ["macroPlus"], internal_variables, user_variables, dynamic_variables)
+                _cleaned_osc_addr, _cleaned_osc_args = osc.process_osc("/eos/ping", ["macroPlus"], internal_variables, user_variables, dynamic_variables)
+                osc_client.send_message(_cleaned_osc_addr, _cleaned_osc_args)
         elif request.form["submit"] == "Send OSC":
             if osc_client:
                 # If the console is configured, send the custom OSC
-                osc.process_osc(osc_client, request.form["custom_osc_address"], request.form["custom_osc_arguments"].split(), internal_variables, user_variables, dynamic_variables)
+                _cleaned_osc_addr, _cleaned_osc_args = osc.process_osc(request.form["custom_osc_address"], request.form["custom_osc_arguments"].split(), internal_variables, user_variables, dynamic_variables)
+                osc_client.send_message(_cleaned_osc_addr, _cleaned_osc_args)
         else:
             pass
         return render_template("network_config.html", console_network=console_network_config)
@@ -254,10 +253,6 @@ def handle_osc():
     global console_network_config, osc_client, user_macros, internal_macros, internal_variables, user_variables, dynamic_variables
     json_osc = request.json
     json_osc["args"] = json.loads(json_osc["args"])
-
-    if len(json_osc["args"]) == 0:
-        # Not all OSC messages come with arguments, just give it an empty one
-        json_osc["args"] = [""]
 
     if json_osc["address"] == "/eos/out/ping" and json_osc["args"][0] == "macroPlus":
         console_network_config[2] = "%s - Ping validated!" % str(datetime.datetime.now())
@@ -344,37 +339,60 @@ def handle_osc():
         if "/eos/out/active/cue/text" in json_osc["address"]:
             # Update the list, cue and listcue variables
             split_args = json_osc["args"][0].split(" ")
-            dynamic_variables["%cue%"].set_value(split_args[0].split("/")[1])
-            dynamic_variables["%list%"].set_value(split_args[0].split("/")[0])
-            dynamic_variables["%listcue%"].set_value(split_args[0])
+            for dynamic_variable in dynamic_variables:
+                if dynamic_variable.name == "%cue%":
+                    dynamic_variable.set_value(split_args[0].split("/")[1])
+                    break
+                elif dynamic_variable.name == "%list%":
+                    dynamic_variable.set_value(split_args[0].split("/")[0])
+                    break
+                elif dynamic_variable.name == "%listcue%":
+                    dynamic_variable.set_value(split_args[0])
+                    break
 
         elif "/eos/out/active/chan" in json_osc["address"]:
             # Update the sel variable
-            dynamic_variables["%sel%"].set_value(json_osc["args"][0].split(" ")[0])
+            for dynamic_variable in dynamic_variables:
+                if dynamic_variable.name == "%sel%":
+                    dynamic_variable.set_value(json_osc["args"][0].split(" ")[0])
+                    break
 
         elif "/eos/out/event/show/saved" in json_osc["address"]:
             # Update the filename variable
-            dynamic_variables["%filename%"].set_value(json_osc["args"][0].split("/")[-1])
+            for dynamic_variable in dynamic_variables:
+                if dynamic_variable.name == "%filename%":
+                    dynamic_variable.set_value(json_osc["args"][0].split("/")[-1])
+                    break
 
         elif "cmd" in json_osc["address"]:
             # Update the current console mode
             if "LIVE" in json_osc["args"][0]:
-                dynamic_variables["%live%"].set_value("True")
-                dynamic_variables["%blind%"].set_value("False")
-                dynamic_variables["%staging%"].set_value("False")
+                for dynamic_variable in dynamic_variables:
+                    if dynamic_variable.name == "%live%":
+                        dynamic_variable.set_value("True")
+                        break
+                    elif dynamic_variable.name == "%blind%":
+                        dynamic_variable.set_value("False")
+                        break
             elif "BLIND" in json_osc["args"][0]:
-                dynamic_variables["%live%"].set_value("False")
-                dynamic_variables["%blind%"].set_value("True")
-                dynamic_variables["%staging%"].set_value("False")
+                for dynamic_variable in dynamic_variables:
+                    if dynamic_variable.name == "%live%":
+                        dynamic_variable.set_value("False")
+                        break
+                    elif dynamic_variable.name == "%blind%":
+                        dynamic_variable.set_value("True")
+                        break
 
             if "Staging" in json_osc["args"][0]:
-                dynamic_variables["%staging%"].set_value("True")
+                for dynamic_variable in dynamic_variables:
+                    if dynamic_variable.name == "%staging%":
+                        dynamic_variable.set_value("True")
+                        break
             else:
-                dynamic_variables["%staging%"].set_value("False")
-
-        dynamic_variables_list = []
-        for item in dynamic_variables.items():
-            dynamic_variables_list.append([item[0], getattr(item[1], "var_value")])
+                for dynamic_variable in dynamic_variables:
+                    if dynamic_variable.name == "%staging%":
+                        dynamic_variable.set_value("False")
+                        break
 
         return ("", 204)
 
@@ -384,11 +402,8 @@ def variable_console():
     global user_variables, dynamic_variables
     if request.method == "GET":
         # Load the page, displaying variables
-        dynamic_variables_list = []
-        for item in dynamic_variables.items():
-            dynamic_variables_list.append([item[0], getattr(item[1], "var_value")])
 
-        return render_template("variable_console.html", user_variables=user_variables, dynamic_variables=dynamic_variables_list)
+        return render_template("variable_console.html", user_variables=user_variables, dynamic_variables=dynamic_variables)
 
     elif request.method == "POST":
         # Variable is being updated
@@ -404,11 +419,7 @@ def variable_console():
             # Set the variable to a new value
             user_variables = variables.set_user_variable(request.form["variable_name"], request.form["variable_value"], user_variables, debug=True)
 
-        dynamic_variables_list = []
-        for item in dynamic_variables.items():
-            dynamic_variables_list.append([item[0], getattr(item[1], "var_value")])
-
-        return render_template("variable_console.html", user_variables=user_variables, dynamic_variables=dynamic_variables_list)
+        return render_template("variable_console.html", user_variables=user_variables, dynamic_variables=dynamic_variables)
 
 
 # Initialize the config on startup

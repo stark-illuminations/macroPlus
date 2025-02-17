@@ -7,7 +7,7 @@ import value
 import osc
 
 
-def check_condition(statement, internal_variables, user_variables, dynamic_variables, arg_input=None):
+def check_condition(statement: list, internal_variables, user_variables, dynamic_variables, arg_input=None):
     """Read a list of script words and attempt to interpret them as an expression, then return the result.
     """
     invert_condition = False
@@ -35,7 +35,14 @@ def check_condition(statement, internal_variables, user_variables, dynamic_varia
                 else:
                     initial_result = False
             case "===":
-                if value.parse_script_word(statement[0], internal_variables, user_variables, dynamic_variables, arg_input=arg_input) == value.parse_script_word(statement[2], internal_variables, user_variables, dynamic_variables, arg_input=arg_input):
+                if (((value.parse_script_word(statement[0], internal_variables, user_variables, dynamic_variables,
+                                           arg_input=arg_input) ==
+                        value.parse_script_word(statement[2], internal_variables, user_variables, dynamic_variables,
+                                                arg_input=arg_input))) and
+                        (type(value.parse_script_word(statement[0], internal_variables, user_variables,
+                                                      dynamic_variables, arg_input=arg_input)) is
+                         type(value.parse_script_word(statement[2], internal_variables, user_variables,
+                                                      dynamic_variables, arg_input=arg_input)))):
                     initial_result = True
                 else:
                     initial_result = False
@@ -126,11 +133,11 @@ def handle_string_end(word, string_buffer, active_expression_count, expressions,
     """Handle the end of a string during script processing."""
     word = word.strip("\"'")
     string_buffer.append(word)
+    print(string_buffer)
 
     # Re-assemble the string buffer into final_string, then reset string variables
     final_string = " ".join(string_buffer)
     string_buffer = []
-    string_active = False
 
     # Check if any expressions are active
     if active_expression_count > 0:
@@ -425,8 +432,13 @@ def run_script(script: list, osc_client, osc_addr: str, osc_arg: list, internal_
                     # Syntax: osc /some/osc/address [argument_1] [argument_2] [argument_3]...
                     if debug:
                         print("- OSC command found on line %i. Processing!" % current_line)
-                    osc.process_osc(osc_client, split_line[1], split_line[2:], internal_variables, user_variables,
-                                    dynamic_variables, arg_input=arg_input, debug=True)
+                    _cleaned_osc_addr, _cleaned_osc_args = osc.process_osc(split_line[1], split_line[2:],
+                                                                           internal_variables=internal_variables,
+                                                                           user_variables=user_variables,
+                                                                           dynamic_variables=dynamic_variables,
+                                                                           arg_input=arg_input,
+                                                                           debug=True)
+                    osc_client.send_message(_cleaned_osc_addr, _cleaned_osc_args)
                     pass
                 case "wait":
                     # Wait the listed amount of time in seconds
@@ -688,3 +700,6 @@ def run_script(script: list, osc_client, osc_addr: str, osc_arg: list, internal_
     if debug:
         print("Returning 'done'.")
     return ("done", "")
+
+print(eval_expression(["One", "+", "Two"], None, None, None,
+                                     arg_input="", debug=True))
