@@ -34,6 +34,7 @@ def start_osc_server():
 
     return server
 
+
 if __name__ == "__main__":
     osc_listener = start_osc_server()
     osc_listener.serve_forever()

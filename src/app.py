@@ -115,6 +115,40 @@ def initialize_config(console_network_config, osc_client, user_macros, user_vari
 
     return console_network_config, osc_client, user_macros, user_variables
 
+
+def run_macro(macro_to_run, osc_client, json_osc, user_macros, internal_macros, internal_variables, user_variables,
+              dynamic_variables, requested_arg, debug):
+    """Run the given macro, and handle its run result appropriately"""
+    run_result = macro_to_run.run_action(osc_client, json_osc["address"], json_osc["args"], internal_macros,
+                                         internal_variables, user_variables, dynamic_variables,
+                                         has_eos_queries=False, arg_input=requested_arg, debug=debug)
+
+    print("Run result: ", run_result)
+
+    # Check run_result to see what to do next
+    if run_result[0] == "done" or run_result[0] == "wait":
+        # Do nothing
+        pass
+    elif run_result[0] == "run":
+        # Run the action associated with the macro with the given uuid.
+        # Set has_eos_queries to True because run actions are expected to start the final run of a macro.
+        for macro in internal_macros:
+            if macro.uuid == run_result[1]:
+                _second_run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
+                                                      internal_macros, internal_variables, user_variables,
+                                                      dynamic_variables, has_eos_queries=True, debug=debug)
+
+        for macro in user_macros:
+            if macro.uuid == run_result[1]:
+                _second_run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
+                                                      internal_macros, internal_variables, user_variables,
+                                                      dynamic_variables, has_eos_queries=True, debug=debug)
+
+        print("Second run result: ", _second_run_result)
+
+    macro_to_run.last_fire_time = datetime.datetime.now()
+
+
 # Flask setup
 app = Flask(__name__)
 
@@ -173,7 +207,7 @@ def index():
                             macro_object.name = new_macro_name
                             macro_object.trigger_type = new_macro_trigger_type
                             macro_object.trigger = new_macro_trigger
-                            macro_object.requested_arg_index = new_macro_arg_index
+                            macro_object.requested_arg_index = int(new_macro_arg_index)
                             macro_object.action = new_macro_action
                             print(macro_object.action)
                             break
@@ -190,8 +224,10 @@ def index():
                 # Manually run the macro's action
                 for macro in user_macros:
                     if macro.uuid == request.form["macro_uuid"]:
-                        print("Running macro!")
-                        macro.run_action(osc_client, "", [""], internal_macros, internal_variables, user_variables, dynamic_variables, has_eos_queries=True, debug=True)
+                        print("Running macro: %s" % macro.uuid)
+                        fake_json = {"address": "", "args": [""]}
+                        fake_requested_arg = ""
+                        run_macro(macro, osc_client, fake_json, user_macros, internal_macros, internal_variables, user_variables, dynamic_variables, fake_requested_arg, debug=True)
 
 
         elif request.form["submit_macro"] == "Delete Macro":
@@ -269,47 +305,24 @@ def handle_osc():
                     requested_arg = json_osc["args"][internal_macro.requested_arg_index]
                 except IndexError:
                     requested_arg = ""
-                run_result = internal_macro.run_action(osc_client, json_osc["address"], json_osc["args"], internal_macros, internal_variables, user_variables, dynamic_variables,
-                                                       has_eos_queries=False, arg_input=requested_arg, debug=True)
+                run_macro(internal_macro, osc_client, json_osc, user_macros, internal_macros, internal_variables, user_variables, dynamic_variables, requested_arg, debug=True)
 
-                print("Run result: ", run_result)
-
-                # Check run_result to see what to do next
-                if run_result[0] == "done" or run_result[0] == "wait":
-                    # Do nothing
-                    pass
-                elif run_result[0] == "run":
-                    # Run the action associated with the macro with the given uuid.
-                    # Set has_eos_queries to True because run actions are expected to start the final run of a macro.
-                    for macro in internal_macros:
-                        if macro.uuid == run_result[1]:
-                            _second_run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"], internal_macros, internal_variables, user_variables, dynamic_variables, has_eos_queries=True, debug=True)
 
         for user_macro in user_macros:
             # Check if user macro relies on OSC for a trigger. If it does, see if it matches and run it if it does.
             if user_macro.trigger.split(" ")[0] == "osc":
+                print(user_macro.trigger.split(" ")[1])
                 if user_macro.trigger.split(" ")[1] == json_osc["address"]:
                     # If the address matches, check that the macro's cooldown is over, then run the action.
                     print(("!!!!!!!!!!! ", (datetime.datetime.now() - user_macro.last_fire_time).total_seconds()))
                     if (datetime.datetime.now() - user_macro.last_fire_time).total_seconds() >= macros.macro_cooldown_time:
-                        run_result = user_macro.run_action(osc_client, json_osc["address"], json_osc["args"], internal_macros, internal_variables, user_variables, dynamic_variables,
-                                                               has_eos_queries=False, arg_input=json_osc["args"], debug=True)
+                        try:
+                            requested_arg = json_osc["args"][user_macro.requested_arg_index]
+                        except IndexError:
+                            requested_arg = 0
 
-                        print("Run result: ", run_result)
-
-                        # Check run_result to see what to do next
-                        if run_result[0] == "done" or run_result[0] == "wait":
-                            # Do nothing
-                            pass
-                        elif run_result[0] == "run":
-                            # Run the action associated with the macro with the given uuid.
-                            # Set has_eos_queries to True because run actions are expected to start the final run of a macro.
-                            print("Running second action!")
-                            for macro in user_macros:
-                                if macro.uuid == run_result[1]:
-                                    _second_run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"], internal_macros, internal_variables, user_variables, dynamic_variables, has_eos_queries=True, arg_input=json_osc["args"], debug=True)
-
-                        user_macro.last_fire_time = datetime.datetime.now()
+                        run_macro(user_macro, osc_client, json_osc, user_macros, internal_macros,
+                                  internal_variables, user_variables, dynamic_variables, requested_arg, debug=True)
 
             elif user_macro.trigger.split(" ")[0] == "cue":
                 # Handle macros which fire on a given cue
@@ -319,21 +332,13 @@ def handle_osc():
                     # Check that the macro_cooldown_time has elapsed since the macro was last fired.
                     if (datetime.datetime.now() - user_macro.last_fire_time).total_seconds() >= macros.macro_cooldown_time:
                         # If the address matches, run the action.
-                        run_result = user_macro.run_action(osc_client, json_osc["address"], json_osc["args"], internal_macros, internal_variables, user_variables, dynamic_variables,
-                                                               has_eos_queries=False, arg_input=json_osc["args"], debug=True)
+                        try:
+                            requested_arg = json_osc["args"][user_macro.requested_arg_index]
+                        except IndexError:
+                            requested_arg = 0
 
-                        # Check run_result to see what to do next
-                        if run_result[0] == "done" or run_result[0] == "wait":
-                            # Do nothing
-                            pass
-                        elif run_result[0] == "run":
-                            # Run the action associated with the macro with the given uuid.
-                            # Set has_eos_queries to True because run actions are expected to start the final run of a macro.
-                            for macro in user_macros:
-                                if macro.uuid == run_result[1]:
-                                    _second_run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"], internal_macros, internal_variables, user_variables, dynamic_variables, has_eos_queries=True, arg_input=json_osc["args"], debug=True)
-
-                        user_macro.last_fire_time = datetime.datetime.now()
+                        run_macro(user_macro, osc_client, json_osc, user_macros, internal_macros,
+                                  internal_variables, user_variables, dynamic_variables, requested_arg, debug=True)
 
         # Check incoming OSC against dynamic variables
         if "/eos/out/active/cue/text" in json_osc["address"]:
@@ -403,7 +408,7 @@ def variable_console():
     if request.method == "GET":
         # Load the page, displaying variables
 
-        return render_template("variable_console.html", user_variables=user_variables, dynamic_variables=dynamic_variables)
+        return render_template("variable_console.html", user_variables=user_variables, dynamic_variables=dynamic_variables, internal_variables=internal_variables)
 
     elif request.method == "POST":
         # Variable is being updated

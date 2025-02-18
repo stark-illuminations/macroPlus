@@ -1,1 +1,1 @@
-if *ping_arg*:  new user_10 = Trueelse:  new user_10 = False
+eos(/ip/13/label)

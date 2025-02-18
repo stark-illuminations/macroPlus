@@ -46,5 +46,9 @@
     </div>
     <div id="internal_variable_list">
         <h2>Internal Variables</h2>
+        {% for variable in internal_variables %}
+        <label for="dynamic_staging">{{variable ['name']}}</label>
+        <input type="text" id="{{variable['name']}}_value" name="variable_value" value="{{variable['var_value']}}"><br>
+        {% endfor %}
     </div>
 {% endblock %}

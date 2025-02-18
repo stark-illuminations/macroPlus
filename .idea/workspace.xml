@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Moved all project files out of the venv and into the src directory.">
+    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Cleaned several bugs in the process of testing.">
+      <change afterPath="$PROJECT_DIR$/src/eos_query.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/tests/__init__.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/tests/test_osc.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/tests/test_osc_server.py" afterDir="false" />
@@ -12,13 +13,13 @@
       <change afterPath="$PROJECT_DIR$/src/tests/test_value.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/macros/02d13907-be6a-479b-9e20-d70a423acf42.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/macros/02d13907-be6a-479b-9e20-d70a423acf42.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/macros/b6ea67e7-6619-407f-a845-4d665c427701.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/macros/b6ea67e7-6619-407f-a845-4d665c427701.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/macros.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/macros.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/macros/40aeb6e4-8da7-4945-a0fe-8bee88d547da.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/macros/40aeb6e4-8da7-4945-a0fe-8bee88d547da.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/config/variables.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/variables.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/macros.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/macros.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/osc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/value.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/value.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/variable_console.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/variable_console.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,28 +77,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Python tests.pytest for test_osc.test_process_osc.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for test_osc.test_start_osc_client.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for test_osc_server.test_eos_out.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for test_osc_server.test_start_osc_server.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for test_scripting.test_check_condition.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for test_scripting.test_eval_expression.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for test_scripting.test_handle_string_end.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for test_value.test_parse_script_word.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for test_value.test_parse_value.executor&quot;: &quot;Run&quot;,
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.osc_server.executor&quot;: &quot;Run&quot;,
-    &quot;Python.scripting.executor&quot;: &quot;Run&quot;,
-    &quot;Python.value.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;add__tests&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Python tests.pytest for test_osc.test_process_osc.executor": "Run",
+    "Python tests.pytest for test_osc.test_start_osc_client.executor": "Run",
+    "Python tests.pytest for test_osc_server.test_eos_out.executor": "Run",
+    "Python tests.pytest for test_osc_server.test_start_osc_server.executor": "Run",
+    "Python tests.pytest for test_scripting.test_check_condition.executor": "Run",
+    "Python tests.pytest for test_scripting.test_eval_expression.executor": "Run",
+    "Python tests.pytest for test_scripting.test_handle_string_end.executor": "Run",
+    "Python tests.pytest for test_value.test_parse_script_word.executor": "Run",
+    "Python tests.pytest for test_value.test_parse_value.executor": "Run",
+    "Python.app.executor": "Run",
+    "Python.eos_query.executor": "Run",
+    "Python.osc_server.executor": "Run",
+    "Python.scripting.executor": "Run",
+    "Python.value.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "add__eos__queries",
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src" />
@@ -116,11 +118,34 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.11 (macroPlus)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="eos_query" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="macroPlus" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/app.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/eos_query.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -138,33 +163,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.11 (macroPlus)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/osc_server.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="scripting" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="macroPlus" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/scripting.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -209,8 +213,8 @@
     </configuration>
     <list>
       <item itemvalue="Python.app" />
+      <item itemvalue="Python.eos_query" />
       <item itemvalue="Python.osc_server" />
-      <item itemvalue="Python.scripting" />
       <item itemvalue="Python tests.pytest for test_scripting.test_handle_string_end" />
       <item itemvalue="Python tests.pytest for test_scripting.test_eval_expression" />
     </list>
@@ -218,9 +222,9 @@
       <list>
         <item itemvalue="Python.app" />
         <item itemvalue="Python.osc_server" />
-        <item itemvalue="Python tests.pytest for test_scripting.test_handle_string_end" />
-        <item itemvalue="Python tests.pytest for test_scripting.test_eval_expression" />
-        <item itemvalue="Python.scripting" />
+        <item itemvalue="Python.eos_query" />
+        <item itemvalue="Python.app" />
+        <item itemvalue="Python.osc_server" />
       </list>
     </recent_temporary>
   </component>
@@ -264,7 +268,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739727029440</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Cleaned several bugs in the process of testing.">
+      <option name="closed" value="true" />
+      <created>1739764929572</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1739764929572</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -282,6 +294,7 @@
     <MESSAGE value="Initial commit. Web interface functions, simple OSC send and receive functions, user macros exist but do not function, user and dynamic variables exist." />
     <MESSAGE value="Implemented scripting language, OSC and cue triggers for user macros." />
     <MESSAGE value="Moved all project files out of the venv and into the src directory." />
-    <option name="LAST_COMMIT_MESSAGE" value="Moved all project files out of the venv and into the src directory." />
+    <MESSAGE value="Cleaned several bugs in the process of testing." />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaned several bugs in the process of testing." />
   </component>
 </project>

@@ -196,6 +196,7 @@ def pre_process_script_line(line, arg_input=None, debug=False):
     line = line.strip(":")
     raw_split_line = line.split(" ")
 
+
     # Separate any parentheses joined to a word
     parentheses_buffer = []
     for word in raw_split_line:
@@ -206,7 +207,7 @@ def pre_process_script_line(line, arg_input=None, debug=False):
         elif re.match("\(\S*", word):
             parentheses_buffer.append("(")
             parentheses_buffer.append(word[1:])
-        elif re.match("\S*\)", word):
+        elif re.match("\S*\)", word) and not re.match("eos\(\S*\)", word):
             parentheses_buffer.append(word[:-1])
             parentheses_buffer.append(")")
         else:
@@ -221,7 +222,7 @@ def pre_process_script_line(line, arg_input=None, debug=False):
             arithmetic_buffer.append(word[0])
             arithmetic_buffer.append("+")
             arithmetic_buffer.append(word[1])
-        elif re.match("\S+-\S+", word):
+        elif re.match("\S+-\S+", word) and not re.match("#internal_\d+_[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}#", word):
             word = word.split("-")
             arithmetic_buffer.append(word[0])
             arithmetic_buffer.append("-")
@@ -359,7 +360,7 @@ def run_script(script: list, osc_client, osc_addr: str, osc_arg: list, internal_
 
     while run_action:
         line = script[current_line]
-        split_line = pre_process_script_line(line, arg_input=arg_input, debug=False)
+        split_line = pre_process_script_line(line, arg_input=arg_input, debug=debug)
 
         # Get the opcode and the line statement
         opcode = split_line[0]
@@ -486,11 +487,24 @@ def run_script(script: list, osc_client, osc_addr: str, osc_arg: list, internal_
                     # Syntax: new new_var_name = new_var_value
                     if debug:
                         print("- New command found at line %i. Processing!" % current_line)
-                    variables.add_user_variable(line_statement[0],
+                    user_variables = variables.add_user_variable(line_statement[0],
                                                 value.parse_script_word(line_statement[2], internal_variables,
                                                                             user_variables, dynamic_variables,
                                                                             arg_input=arg_input, debug=debug),
                                                 user_variables, debug=debug)
+                case "newint":
+                    # Create a new internal variable with the given name and value
+                    # Syntax: new new_var_name = new_var_value
+                    if debug:
+                        print("- Newint command found at line %i. Processing!" % current_line)
+                    internal_variables = variables.add_internal_variable(line_statement[0],
+                                                                         value.parse_script_word(line_statement[2],
+                                                                                                 internal_variables,
+                                                                                                 user_variables,
+                                                                                                 dynamic_variables,
+                                                                                                 arg_input=arg_input,
+                                                                                                 debug=debug),
+                                                                         internal_variables, debug=debug)
                 case "set":
                     # Set an existing user variable with the given name to a new value
                     # Syntax 1: set existing_var = other_existing_var (get the value from the other variable)
@@ -505,7 +519,7 @@ def run_script(script: list, osc_client, osc_addr: str, osc_arg: list, internal_
                         if debug:
                             print("-- Variable is a user variable.")
                         try:
-                            variables.set_user_variable(line_statement[0], eval_expression(line_statement[2:],
+                            user_variables = variables.set_user_variable(line_statement[0], eval_expression(line_statement[2:],
                                                                                                      internal_variables,
                                                                                                      user_variables,
                                                                                                      dynamic_variables,
@@ -520,7 +534,7 @@ def run_script(script: list, osc_client, osc_addr: str, osc_arg: list, internal_
                         if debug:
                             print("-- Variable is an internal variable.")
                         try:
-                            variables.set_internal_variable(line_statement[0],
+                            internal_variables = variables.set_internal_variable(line_statement[0],
                                                             eval_expression(line_statement[2:],
                                                                                       internal_variables,
                                                                                       user_variables, dynamic_variables,
@@ -543,12 +557,12 @@ def run_script(script: list, osc_client, osc_addr: str, osc_arg: list, internal_
                         # User variable
                         if debug:
                             print("-- Variable is a user variable.")
-                        variables.delete_user_variable(line_statement[0], debug=True)
+                        user_variables = variables.delete_user_variable(line_statement[0], debug=True)
                     elif re.match("#\w+#", line_statement[0]):
                         # Internal variable
                         if debug:
                             print("-- Variable is an internal variable.")
-                        variables.delete_internal_variable(line_statement[0], debug=True)
+                        internal_variables = variables.delete_internal_variable(line_statement[0], debug=True)
                     else:
                         # Not a user or internal variable, do nothing
                         if debug:
@@ -700,6 +714,3 @@ def run_script(script: list, osc_client, osc_addr: str, osc_arg: list, internal_
     if debug:
         print("Returning 'done'.")
     return ("done", "")
-
-print(eval_expression(["One", "+", "Two"], None, None, None,
-                                     arg_input="", debug=True))
