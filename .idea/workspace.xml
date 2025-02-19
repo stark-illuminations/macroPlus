@@ -4,23 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Added eos query base. Eos queries are now built, and internal variable support is improved.">
-      <change afterPath="$PROJECT_DIR$/src/config/backup_macros/02d13907-be6a-479b-9e20-d70a423acf42.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/config/backup_macros/15f46f1e-7ecb-493c-840a-a4e9876ff853.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/config/backup_macros/40aeb6e4-8da7-4945-a0fe-8bee88d547da.txt" afterDir="false" />
+    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Added chained eos queries, updated how variables and macros are stored to avoid conflicts.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/macros.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/macros.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/config/macros/40aeb6e4-8da7-4945-a0fe-8bee88d547da.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/macros/40aeb6e4-8da7-4945-a0fe-8bee88d547da.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/macros/b6ea67e7-6619-407f-a845-4d665c427701.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/config/variables.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/variables.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/eos_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/eos_query.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/macros.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/macros.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/osc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/value.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/value.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -296,7 +288,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739902584070</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added chained eos queries, updated how variables and macros are stored to avoid conflicts.">
+      <option name="closed" value="true" />
+      <created>1739982835461</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1739982835461</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -316,6 +316,7 @@
     <MESSAGE value="Moved all project files out of the venv and into the src directory." />
     <MESSAGE value="Cleaned several bugs in the process of testing." />
     <MESSAGE value="Added eos query base. Eos queries are now built, and internal variable support is improved." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added eos query base. Eos queries are now built, and internal variable support is improved." />
+    <MESSAGE value="Added chained eos queries, updated how variables and macros are stored to avoid conflicts." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added chained eos queries, updated how variables and macros are stored to avoid conflicts." />
   </component>
 </project>

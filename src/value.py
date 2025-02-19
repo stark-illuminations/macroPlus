@@ -94,7 +94,7 @@ def parse_script_word(script_word, uuid, internal_variables, user_variables, dyn
             if debug:
                 print("-- No variable match found. Returning None.")
             return None
-        elif re.match("eos\([\w/]+\)", script_word):
+        elif re.match("eos\([\w/+->]+\)", script_word):
             # Eos query, return the value at the right index and increment the eos query count
             if debug:
                 print("- Word appears to be an Eos query.")
@@ -135,14 +135,15 @@ def parse_script_word(script_word, uuid, internal_variables, user_variables, dyn
         return parse_value(script_word, debug=debug)
 
 
-def regex_osc_trigger(raw_trigger):
+def regex_osc_trigger(raw_trigger: str):
     # Make an OSC address pattern into a string which can be used to match incoming OSC
 
     # Split off any address patterns if they are given
-    print(raw_trigger)
     raw_trigger = raw_trigger.split("=")
 
+    print("raw trigger: %s" % raw_trigger)
     raw_trigger_address_pattern = raw_trigger[0]
+    print("raw trigger address pattern: %s" % raw_trigger_address_pattern)
 
     if len(raw_trigger) > 1:
         # Remove brackets from argument patterns, then split at commas
@@ -160,6 +161,7 @@ def regex_osc_trigger(raw_trigger):
 
     if raw_trigger_address_pattern[-1] == "*":
         # Terminal wildcard in address pattern can be any number of address containers
+        print("Terminal wildcard")
         raw_trigger_address_pattern = raw_trigger_address_pattern[0:-1] + ".*"
 
     # Escape forward slashes
@@ -168,4 +170,5 @@ def regex_osc_trigger(raw_trigger):
     # Remaining wildcards are internal, and can represent any single address container
     raw_trigger_address_pattern = raw_trigger_address_pattern.replace("*", "[^/]*")
 
+    print("Final address pattern: %s" % raw_trigger_address_pattern)
     return raw_trigger_address_pattern, raw_trigger_arg_patterns

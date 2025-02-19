@@ -564,7 +564,7 @@ def pre_process_script_line(line, uuid, internal_variables, user_variables, dyna
 
 
 def run_script(script: list, osc_client, uuid, internal_macros: list, internal_variables, user_variables, dynamic_variables, arg_input, eos_query_count=0, debug=False ):
-    """Run a script, then return Done."""
+    """Run a script, then return Done and internal macros."""
     run_action = True
     current_line = 0
     loop_active = False
@@ -963,11 +963,14 @@ def run_script(script: list, osc_client, uuid, internal_macros: list, internal_v
                             if debug:
                                 print("-- Loop end line is unknown. Setting skip_to_endloop to True.")
                             skip_to_endloop = True
+                case "wipeints":
+                    # Delete all internal macros
+                    internal_macros = []
                 case "run":
                     if debug:
                         print("- Run statement found at line %i! Running new macro." % current_line)
                         macro_uuid_to_run = line_statement[0]
-                        return "run", macro_uuid_to_run
+                        return "run", macro_uuid_to_run, internal_macros
                 case "pass":
                     if debug:
                         print("- Pass statement found at line %i! Passing." % current_line)
@@ -991,4 +994,4 @@ def run_script(script: list, osc_client, uuid, internal_macros: list, internal_v
         print("Returning 'done'.")
 
     # Delete all relevant internal variables and macros
-    return ("done", "")
+    return ("done", "", internal_macros)

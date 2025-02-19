@@ -241,8 +241,12 @@ def get_query_osc(target_type: str, target_list: list, attribute: str):
     """Based on the target type, target list, and attribute, return an OSC address and response to get the information."""
     # Check if any items in the target list are multi-part. If they are, split them into their component parts.
     split_target_list = []
-    for target in target_list:
-        split_target_list.append(target.split(":"))
+    try:
+        for target in target_list:
+            split_target_list.append(target.split(":"))
+    except TypeError:
+        # Target was invalid, return None
+        return None
 
     target_list = split_target_list
 
@@ -403,10 +407,10 @@ def get_query_osc(target_type: str, target_list: list, attribute: str):
                     attribute = attribute.replace("_", " ")
                     attribute = attribute.replace("\\", "/")
                     attribute = attribute.title()
-                    attribute = "$%s [" % attribute
+                    attribute = "^%s [*" % attribute
 
                     osc_query_address_pattern = "/eos/user/0/newcmd/%target_0%/#"
-                    osc_trigger_response = ["/eos/out/active/wheel/*", [attribute]]
+                    osc_trigger_response = ["/eos/out/active/wheel/*=[%s]" % attribute, 2]
         case "cuelist":
             match attribute:
                 case "index":
@@ -1094,3 +1098,6 @@ class EosQuery:
         # If the target type was valid, determine the OSC message and response to complete the query
         if target_type is not None:
             self.final_queries = get_query_osc(self.target_type, self.target, self.attribute)
+
+            if self.final_queries is None:
+                self.final_queries = []

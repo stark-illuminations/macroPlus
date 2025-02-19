@@ -143,15 +143,20 @@ def delete_user_macro(macro_uuid, user_macros):
     return user_macros
 
 
-def add_internal_macro(name, trigger, action, uuid, internal_macros, arg_index=0):
+def add_internal_macro(name, trigger: tuple, action, uuid, internal_macros, arg_index=0):
     """Add a new user macro to internal_macros
     """
-    trigger_type = trigger.split(" ")[0]
+    trigger_type = trigger[0]
+
     if trigger_type == "osc":
-        trigger_address, trigger_args = value.regex_osc_trigger(trigger.split(" ")[1])
+        trigger_address, trigger_args = value.regex_osc_trigger(trigger[1])
     else:
-        trigger_address = trigger.split(" ")[1]
+        trigger_address = trigger[1][0]
         trigger_args = []
+
+    print("New macro trigger type: %s" % trigger_type)
+    print("New macro trigger address: %s" % trigger_address)
+    print("New macro trigger args: %s" % trigger_args)
     internal_macros.append(Macro(name, trigger_type, trigger_address, trigger_args, action, uuid, arg_index))
     return internal_macros
 
@@ -195,6 +200,9 @@ class Macro:
         """Loop through the action and handle all base steps before handing off to the interpreter."""
         if debug:
             print("Running macro %s" % self.uuid)
+        if debug:
+            print("Mark as run?: %s" % mark_as_run)
+        self.has_been_run = mark_as_run
         if not has_eos_queries:
             if debug:
                 print("STATUS: No Eos queries provided, searching action...")
@@ -245,7 +253,6 @@ class Macro:
             for i in range(len(eos_queries)):
                 print("------Eos Query %i-----" % i)
                 for j in range(len(eos_queries[i].final_queries)):
-                    print(i, len(eos_queries), j, len(eos_queries[i].final_queries))
                     # Run through list and make an internal macro for each query
                     current_query_address = eos_queries[i].final_queries[j][0]
                     current_query_response_trigger = eos_queries[i].final_queries[j][1]
@@ -266,7 +273,7 @@ class Macro:
                         if debug:
                             print("First query! Building send-only macro at UUID %s and setting first macro." % new_macro_uuid)
 
-                        trigger = "none none"
+                        trigger = ("none", ["none"])
                         action = ["osc %s" % current_query_address]
                         internal_macros = add_internal_macro(new_macro_name, trigger, action, new_macro_uuid, internal_macros)
 
@@ -282,7 +289,7 @@ class Macro:
                         if debug:
                             print("First subquery! Building send-only macro at UUID %s." % new_macro_uuid)
 
-                        trigger = "none none"
+                        trigger = ("none", ["none"])
                         action = ["osc %s" % current_query_address]
                         internal_macros = add_internal_macro(new_macro_name, trigger, action, new_macro_uuid, internal_macros)
                     elif j < len(eos_queries[i].final_queries):
@@ -296,7 +303,7 @@ class Macro:
                         if debug:
                             print("Middle query! Building send/receive macro at UUID %s." % new_macro_uuid)
 
-                        trigger = "osc %s" % current_query_response_trigger[0]
+                        trigger = ("osc", eos_queries[i].final_queries[j - 1][1])
                         action = ["newint #%s# = @%i@" % (internal_variable_name, current_query_response_trigger[1]),
                                   "osc %s" % current_query_address]
                         internal_macros = add_internal_macro(new_macro_name, trigger, action, new_macro_uuid, internal_macros, arg_index=current_query_response_trigger[1])
@@ -311,19 +318,21 @@ class Macro:
                         if debug:
                             print("Final sub-query! Building receive-and-run macro at UUID %s." % new_macro_uuid)
 
-                        trigger = "osc %s" % current_query_response_trigger[0]
+                        trigger = ("osc", current_query_response_trigger[0])
                         action = ["newint #%s# = @%i@" % (internal_variable_name, current_query_response_trigger[1]),
                                   "run %s" % next_macro_uuid]
                         internal_macros = add_internal_macro(new_macro_name, trigger, action, new_macro_uuid, internal_macros, arg_index=current_query_response_trigger[1])
 
                     elif (j + 1) == len(eos_queries[i].final_queries) and (i + 1) == len(eos_queries):
-                        # Real final query! Same sort of action as the last sub-query, plus a line to run the original macro, then return a run command
+                        # Real final query! Same sort of action as the last sub-query, plus a line to delete all internal macros, and then run the original macro
                         new_macro_uuid = str(uuid.uuid4())
                         if debug:
                             print("Final query! Building receive-only macro at UUID %s." % new_macro_uuid)
 
-                        trigger = "osc %s" % current_query_response_trigger[0]
+                            print(current_query_response_trigger)
+                        trigger = ("osc", current_query_response_trigger[0])
                         action = ["newint #%s# = @%i@" % (internal_variable_name, current_query_response_trigger[1]),
+                                  "wipeints",
                                   "run %s" % self.uuid]
                         add_internal_macro(new_macro_name, trigger, action, new_macro_uuid, internal_macros, arg_index=current_query_response_trigger[1])
 
@@ -334,7 +343,7 @@ class Macro:
             if debug:
                 print("STATUS: Eos queries provided, running action.")
             # Eos queries have been received, run the macro
-            run_result, run_args = scripting.run_script(self.action, osc_client, self.uuid, internal_macros, internal_variables, user_variables, dynamic_variables, arg_input, debug=debug)
+            run_result, run_args, internal_macros = scripting.run_script(self.action, osc_client, self.uuid, internal_macros, internal_variables, user_variables, dynamic_variables, arg_input, debug=debug)
 
             # If instructed to, mark self as run
             return run_result, run_args, internal_macros

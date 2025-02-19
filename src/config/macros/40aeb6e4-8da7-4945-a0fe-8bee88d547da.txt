@@ -1,15 +1,1 @@
-if *user_129*:
-  del *user_129*
-endif
-
-if *user_130*:
-  del *user_130*
-endif
-
-if *user_131*:
-  del *user_131*
-endif
-
-new *user_129* = eos(/cp/6/label)
-new *user_130* = eos(/cp/7/label)
-new *user_131* = eos(/cp/8/label)
+if *user_129*:  del *user_129*endifif *user_130*:  del *user_130*endifif *user_131*:  del *user_131*endifnew *user_129* = eos(/group/1/label)

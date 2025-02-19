@@ -125,17 +125,18 @@ def initialize_config(console_network_config, osc_client, user_macros, user_vari
 def run_macro(macro_uuid_to_run, osc_client, json_osc, user_macros, internal_macros, internal_variables, user_variables,
               dynamic_variables, requested_arg, has_eos_queries=False, mark_as_run=False, debug=False):
     """Run the given macro, and handle its run result appropriately"""
-
+    print("Current mark as run: %s" % mark_as_run)
     run_result = ("wait", "")
     for macro in internal_macros:
         if macro.uuid == macro_uuid_to_run:
             macro.last_fire_time = datetime.datetime.now()
             run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
                                                   internal_macros, internal_variables, user_variables,
-                                                  dynamic_variables, mark_as_run=mark_as_run, arg_input=requested_arg, has_eos_queries=has_eos_queries,
+                                                  dynamic_variables, mark_as_run=True, arg_input=requested_arg, has_eos_queries=has_eos_queries,
                                                   debug=debug)
 
             print("Run result: ", run_result)
+            internal_macros = run_result[2]
             break
 
     for macro in user_macros:
@@ -143,11 +144,10 @@ def run_macro(macro_uuid_to_run, osc_client, json_osc, user_macros, internal_mac
             macro.last_fire_time = datetime.datetime.now()
             run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
                                                   internal_macros, internal_variables, user_variables,
-                                                  dynamic_variables, arg_input=requested_arg, has_eos_queries=has_eos_queries,
+                                                  dynamic_variables, mark_as_run=True, arg_input=requested_arg, has_eos_queries=has_eos_queries,
                                                   debug=debug)
 
             print("Run result: ", run_result)
-
             internal_macros = run_result[2]
             break
 
@@ -158,16 +158,6 @@ def run_macro(macro_uuid_to_run, osc_client, json_osc, user_macros, internal_mac
     elif run_result[0] == "done":
         # Delete all internal variables and macros
         # TODO: Add a reload from file feature for persistent internal objects
-        """
-        internal_macro_buffer = []
-        for i in range(len(internal_macros)):
-            if not internal_macros[i].has_been_run:
-                internal_macro_buffer.append(internal_macros[i])
-                # internal_macros.pop(i)
-
-        print("Deleting internal macros")
-        print(len(internal_macros), len(internal_macro_buffer))
-        internal_macros = internal_macro_buffer"""
         pass
 
     elif run_result[0] == "run" and run_result[1] is not None:
@@ -179,10 +169,20 @@ def run_macro(macro_uuid_to_run, osc_client, json_osc, user_macros, internal_mac
         internal_macros = macros.delete_internal_macro(macro_uuid_to_run, internal_macros)
         print("Internal macros length: %i" % len(internal_macros))
 
-    print("Deleting macro %s" % macro_uuid_to_run)
+    """print("Deleting macro %s" % macro_uuid_to_run)
     internal_macros = run_result[2]
     internal_macros = macros.delete_internal_macro(macro_uuid_to_run, internal_macros)
     print("Internal macros length: %i" % len(internal_macros))
+
+    internal_macro_buffer = []
+    for i in range(len(internal_macros)):
+        print(internal_macros[i].has_been_run)
+        if not internal_macros[i].has_been_run:
+            internal_macro_buffer.append(internal_macros[i])
+            # internal_macros.pop(i)
+"""
+    print("Deleting internal macros")
+    print(len(internal_macros))
 
     return internal_macros
 
@@ -319,7 +319,7 @@ def network_config():
                 # If the console is configured, send the custom OSC
                 _cleaned_osc = osc.process_osc("", request.form["custom_osc_address"], request.form["custom_osc_arguments"].split(), internal_variables, user_variables, dynamic_variables)
 
-                if len(_cleaned_osc > 2):
+                if len(_cleaned_osc) > 2:
                     eos_query_count = _cleaned_osc[2]
 
                 _cleaned_osc_addr = _cleaned_osc[0]
@@ -352,14 +352,15 @@ def handle_osc():
             # Check if the address matches the given address pattern and any specified arguments match the right argument pattern
             address_match = False
             args_match = True
-            print(internal_macro.trigger_address, json_osc["address"])
+            print("Addresses: ", internal_macro.trigger_address, json_osc["address"])
             if re.match(internal_macro.trigger_address, json_osc["address"]):
                 address_match = True
+                print("Address matched")
 
             # If any arguments do not match the pattern, or if a necessary argument doesn't exist, args do not match
             for i in range(len(internal_macro.trigger_args)):
                 try:
-                    if re.match(internal_macro.trigger_args[i], json_osc["args"][i]):
+                    if re.match(internal_macro.trigger_args[i], str(json_osc["args"][i])):
                         pass
                     else:
                         args_match = False
