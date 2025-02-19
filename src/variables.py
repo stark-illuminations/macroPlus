@@ -1,24 +1,38 @@
+import xml.etree.ElementTree
 from xml.etree import ElementTree as ET
-
+import time
+import datetime
 
 import value
 
+last_variable_access_time = datetime.datetime.now()
+variable_write_interval = 30
 
 def load_variables():
     """Load user variables from config file."""
     # Open and read the macro config file
-    with open("config/variables.xml", "r") as variable_file:
-        variable_tree = ET.parse(variable_file)
+    variables_loaded = False
+    while not variables_loaded:
+        try:
+            with open("config/variables.xml", "r") as variable_file:
+                variable_tree = ET.parse(variable_file)
 
-        # Parse the variables from the freshly-read file
-        variable_root = variable_tree.getroot()
-        variable_list = variable_root.findall("variable")
+                # Parse the variables from the freshly-read file
+                variable_root = variable_tree.getroot()
+                variable_list = variable_root.findall("variable")
+                variables_loaded = True
+        except xml.etree.ElementTree.ParseError:
+            print("XML error while loading variables, reattempting...")
+            # I *think* this happens sometimes because the file is being read while another function is working on it too
+            # Just wait a fraction of a second and then try again
+            time.sleep(.1)
 
-        return variable_list
+    return variable_list
 
 
-def add_user_variable(variable_name, variable_value, user_variables, debug=False):
+def add_user_variable(variable_name, variable_value, user_variables, loaded_from_file=False, debug=False):
     """Add a new user variable with the given name and value"""
+    global last_variable_access_time, variable_write_interval
     if debug:
         print("Adding user variable!")
         print("Raw variable name: %s" % variable_name)
@@ -49,32 +63,35 @@ def add_user_variable(variable_name, variable_value, user_variables, debug=False
             print("No duplicate found. Adding variable.")
         user_variables.append(InternalVar(variable_name, value.parse_value(variable_value, debug=debug)))
 
-        with open("config/variables.xml", "r") as variable_file:
-            variable_tree = ET.parse(variable_file)
-            variable_root = variable_tree.getroot()
-            variable_list = variable_root.findall("variable")
+        if not loaded_from_file and (datetime.datetime.now() - last_variable_access_time).total_seconds() > variable_write_interval:
+            with open("config/variables.xml", "r") as variable_file:
+                variable_tree = ET.parse(variable_file)
+                variable_root = variable_tree.getroot()
+                variable_list = variable_root.findall("variable")
 
-            exists_in_config = False
+                exists_in_config = False
 
-            for variable in variable_list:
-                if variable.find("name").text == variable_name:
-                    # Variable already exists in XML, we're probably pulling it from there.
-                    exists_in_config = True
+                for variable in variable_list:
+                    if variable.find("name").text == variable_name:
+                        # Variable already exists in XML, we're probably pulling it from there.
+                        exists_in_config = True
 
-            if not exists_in_config:
-                new_variable = ET.SubElement(variable_root, "variable")
-                new_variable_name = ET.SubElement(new_variable, "name")
-                new_variable_name.text = variable_name
-                new_variable_value = ET.SubElement(new_variable, "value")
-                new_variable_value.text = str(value.parse_value(variable_value, debug=debug))
+                if not exists_in_config:
+                    new_variable = ET.SubElement(variable_root, "variable")
+                    new_variable_name = ET.SubElement(new_variable, "name")
+                    new_variable_name.text = variable_name
+                    new_variable_value = ET.SubElement(new_variable, "value")
+                    new_variable_value.text = str(value.parse_value(variable_value, debug=debug))
 
-                variable_tree.write("config/variables.xml")
+                    variable_tree.write("config/variables.xml")
 
     return user_variables
 
 
 def delete_user_variable(variable_name, user_variables, debug=False):
     """Delete the user variable with the given name."""
+    global last_variable_access_time, variable_write_interval
+
     if debug:
         print("Deleting user variable: %s" % variable_name)
         print("- Searching for user variable.")
@@ -86,21 +103,22 @@ def delete_user_variable(variable_name, user_variables, debug=False):
             user_variables.pop(i)
             break
 
-    with open("config/variables.xml", "r") as variable_file:
-        if debug:
-            print("- Searching XML config for variable.")
-        variable_tree = ET.parse(variable_file)
-        variable_root = variable_tree.getroot()
-        variable_list = variable_root.findall("variable")
+    if (datetime.datetime.now() - last_variable_access_time).total_seconds() > variable_write_interval:
+        with open("config/variables.xml", "r") as variable_file:
+            if debug:
+                print("- Searching XML config for variable.")
+            variable_tree = ET.parse(variable_file)
+            variable_root = variable_tree.getroot()
+            variable_list = variable_root.findall("variable")
 
-        for variable in variable_list:
-            if variable.find("name").text == variable_name:
-                if debug:
-                    print("-- User variable found in XML! Deleting.")
-                variable_root.remove(variable)
-                break
+            for variable in variable_list:
+                if variable.find("name").text == variable_name:
+                    if debug:
+                        print("-- User variable found in XML! Deleting.")
+                    variable_root.remove(variable)
+                    break
 
-        variable_tree.write("config/variables.xml")
+            variable_tree.write("config/variables.xml")
 
     return user_variables
 
@@ -117,20 +135,23 @@ def get_user_variable(variable_name, user_variables):
 
 def set_user_variable(variable_name, new_value, user_variables, debug=False):
     """Set a user variable to a new value"""
+    global last_variable_access_time, variable_write_interval
     for variable in user_variables:
         if variable.name == variable_name:
             variable.set_value(value.parse_value(new_value, debug=debug))
 
-    with open("config/variables.xml", "r") as variable_file:
-        variable_tree = ET.parse(variable_file)
-        variable_root = variable_tree.getroot()
-        variable_list = variable_root.findall("variable")
 
-        for variable in variable_list:
-            if variable.find("name").text == variable_name:
-                variable.find("value").text = str(value.parse_value(new_value, debug=debug))
+    if (datetime.datetime.now() - last_variable_access_time).total_seconds() > variable_write_interval:
+        with open("config/variables.xml", "r") as variable_file:
+            variable_tree = ET.parse(variable_file)
+            variable_root = variable_tree.getroot()
+            variable_list = variable_root.findall("variable")
 
-        variable_tree.write("config/variables.xml")
+            for variable in variable_list:
+                if variable.find("name").text == variable_name:
+                    variable.find("value").text = str(value.parse_value(new_value, debug=debug))
+
+            variable_tree.write("config/variables.xml")
 
     return user_variables
 
@@ -151,14 +172,14 @@ def add_internal_variable(variable_name, variable_value, internal_variables, deb
     variable_name = "#%s#" % variable_name
     if debug:
         print("Processed variable name: %s" % variable_name)
-        print("Checking for duplicate internal variables.")
 
     # Check that variable is not a duplicate of an existing internal_variable
     add_variable = True
     for variable in internal_variables:
         if variable.name == variable_name:
             if debug:
-                print("Duplicate found.")
+                print("Duplicate found, overwriting.")
+                variable.var_value = value.parse_value(variable_value)
             add_variable = False
             break
 

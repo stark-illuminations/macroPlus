@@ -1,1 +1,0 @@
-set *ping_arg* = *ping_arg* + 1osc /eos/ping *ping_arg*

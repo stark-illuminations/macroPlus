@@ -18,6 +18,7 @@ def eos_out(addr, *args):
 
     # Format the message into appropriate JSON
     osc_json = {"address": addr, "args": json.dumps(args)}
+    print(osc_json)
 
     requests.post(flask_url, json=osc_json)
 

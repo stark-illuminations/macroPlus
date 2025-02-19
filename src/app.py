@@ -5,6 +5,7 @@ import os
 import re
 import time
 import uuid
+
 import xml.etree.ElementTree as ET
 
 import macros
@@ -99,11 +100,16 @@ def initialize_config(console_network_config, osc_client, user_macros, user_vari
             trigger = macro.find("trigger_type").text + " " + macro.find("trigger").text
             macro_uuid = macro.find("uuid").text
             arg_index = macro.find("arg_index").text
-            with open(macro.find("path").text, "r") as action_file:
-                action = action_file.readlines()
+            try:
+                with open(macro.find("path").text, "r") as action_file:
+                    action = action_file.readlines()
+            except FileNotFoundError:
+                # Macro config file is out of date, macro action file does not exist.
+                # TODO: Figure out how to remove this macro from the list/the XML config
+                pass
 
             # Append the new macro to user_macros
-            user_macros = macros.add_user_macro(name, trigger, action, macro_uuid, arg_index, user_macros)
+            user_macros = macros.add_user_macro(name, trigger, action, macro_uuid, arg_index, user_macros, path=macro.find("path").text)
 
     with open("config/variables.xml", "r") as file:
         # Load user variables
@@ -111,42 +117,74 @@ def initialize_config(console_network_config, osc_client, user_macros, user_vari
 
         # Make a variable object for each variable loaded
         for variable in variable_list:
-            user_variables = variables.add_user_variable(variable.find("name").text, variable.find("value").text, user_variables)
+            user_variables = variables.add_user_variable(variable.find("name").text, variable.find("value").text, user_variables, loaded_from_file=True)
 
     return console_network_config, osc_client, user_macros, user_variables
 
 
-def run_macro(macro_to_run, osc_client, json_osc, user_macros, internal_macros, internal_variables, user_variables,
-              dynamic_variables, requested_arg, debug):
+def run_macro(macro_uuid_to_run, osc_client, json_osc, user_macros, internal_macros, internal_variables, user_variables,
+              dynamic_variables, requested_arg, has_eos_queries=False, mark_as_run=False, debug=False):
     """Run the given macro, and handle its run result appropriately"""
-    run_result = macro_to_run.run_action(osc_client, json_osc["address"], json_osc["args"], internal_macros,
-                                         internal_variables, user_variables, dynamic_variables,
-                                         has_eos_queries=False, arg_input=requested_arg, debug=debug)
 
-    print("Run result: ", run_result)
+    run_result = ("wait", "")
+    for macro in internal_macros:
+        if macro.uuid == macro_uuid_to_run:
+            macro.last_fire_time = datetime.datetime.now()
+            run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
+                                                  internal_macros, internal_variables, user_variables,
+                                                  dynamic_variables, mark_as_run=mark_as_run, arg_input=requested_arg, has_eos_queries=has_eos_queries,
+                                                  debug=debug)
+
+            print("Run result: ", run_result)
+            break
+
+    for macro in user_macros:
+        if macro.uuid == macro_uuid_to_run:
+            macro.last_fire_time = datetime.datetime.now()
+            run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
+                                                  internal_macros, internal_variables, user_variables,
+                                                  dynamic_variables, arg_input=requested_arg, has_eos_queries=has_eos_queries,
+                                                  debug=debug)
+
+            print("Run result: ", run_result)
+
+            internal_macros = run_result[2]
+            break
 
     # Check run_result to see what to do next
-    if run_result[0] == "done" or run_result[0] == "wait":
+    if run_result[0] == "wait":
         # Do nothing
         pass
-    elif run_result[0] == "run":
-        # Run the action associated with the macro with the given uuid.
-        # Set has_eos_queries to True because run actions are expected to start the final run of a macro.
-        for macro in internal_macros:
-            if macro.uuid == run_result[1]:
-                _second_run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
-                                                      internal_macros, internal_variables, user_variables,
-                                                      dynamic_variables, has_eos_queries=True, debug=debug)
+    elif run_result[0] == "done":
+        # Delete all internal variables and macros
+        # TODO: Add a reload from file feature for persistent internal objects
+        """
+        internal_macro_buffer = []
+        for i in range(len(internal_macros)):
+            if not internal_macros[i].has_been_run:
+                internal_macro_buffer.append(internal_macros[i])
+                # internal_macros.pop(i)
 
-        for macro in user_macros:
-            if macro.uuid == run_result[1]:
-                _second_run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
-                                                      internal_macros, internal_variables, user_variables,
-                                                      dynamic_variables, has_eos_queries=True, debug=debug)
+        print("Deleting internal macros")
+        print(len(internal_macros), len(internal_macro_buffer))
+        internal_macros = internal_macro_buffer"""
+        pass
 
-        print("Second run result: ", _second_run_result)
+    elif run_result[0] == "run" and run_result[1] is not None:
+        internal_macros = run_macro(run_result[1], osc_client, json_osc, user_macros, run_result[2], internal_variables, user_variables,
+              dynamic_variables, requested_arg, has_eos_queries=True, mark_as_run=True, debug=debug)
 
-    macro_to_run.last_fire_time = datetime.datetime.now()
+        internal_macros = internal_macros
+        print("Deleting macro %s" % macro_uuid_to_run)
+        internal_macros = macros.delete_internal_macro(macro_uuid_to_run, internal_macros)
+        print("Internal macros length: %i" % len(internal_macros))
+
+    print("Deleting macro %s" % macro_uuid_to_run)
+    internal_macros = run_result[2]
+    internal_macros = macros.delete_internal_macro(macro_uuid_to_run, internal_macros)
+    print("Internal macros length: %i" % len(internal_macros))
+
+    return internal_macros
 
 
 # Flask setup
@@ -180,7 +218,7 @@ def index():
             new_macro_trigger = str().join(request.form["macro_trigger"].split(" ")[1:]).lower()
             try:
                 new_macro_arg_index = str(int(request.form["macro_arg_index"]))
-            except TypeError:
+            except ValueError:
                 new_macro_arg_index = 0
             new_macro_action = request.form["macro_action"].split("\n")
 
@@ -218,16 +256,17 @@ def index():
                 # Add the new macro to user_macros
                 user_macros = macros.add_user_macro(new_macro_name, " ".join([new_macro_trigger_type, new_macro_trigger]),
                                new_macro_action, macro_uuid_to_update,
-                               new_macro_arg_index, user_macros, path="config/macros/%s.txt" % macro_uuid_to_update)
+                               new_macro_arg_index, user_macros, path="")
 
             if request.form["submit_macro"] == "Run Macro":
                 # Manually run the macro's action
                 for macro in user_macros:
                     if macro.uuid == request.form["macro_uuid"]:
-                        print("Running macro: %s" % macro.uuid)
+                        print("Manually running macro: %s" % macro.uuid)
                         fake_json = {"address": "", "args": [""]}
                         fake_requested_arg = ""
-                        run_macro(macro, osc_client, fake_json, user_macros, internal_macros, internal_variables, user_variables, dynamic_variables, fake_requested_arg, debug=True)
+                        internal_variables = []
+                        internal_macros = run_macro(macro.uuid, osc_client, fake_json, user_macros, internal_macros, internal_variables, user_variables, dynamic_variables, fake_requested_arg, debug=True)
 
 
         elif request.form["submit_macro"] == "Delete Macro":
@@ -267,12 +306,24 @@ def network_config():
             if osc_client:
                 # If the console is configured, ping it
                 print("Pinging")
-                _cleaned_osc_addr, _cleaned_osc_args = osc.process_osc("/eos/ping", ["macroPlus"], internal_variables, user_variables, dynamic_variables)
+                _cleaned_osc= osc.process_osc("", "/eos/ping", ["macroPlus"], internal_variables, user_variables, dynamic_variables)
+
+                if len(_cleaned_osc > 2):
+                    eos_query_count = _cleaned_osc[2]
+
+                _cleaned_osc_addr = _cleaned_osc[0]
+                _cleaned_osc_args = _cleaned_osc[1]
                 osc_client.send_message(_cleaned_osc_addr, _cleaned_osc_args)
         elif request.form["submit"] == "Send OSC":
             if osc_client:
                 # If the console is configured, send the custom OSC
-                _cleaned_osc_addr, _cleaned_osc_args = osc.process_osc(request.form["custom_osc_address"], request.form["custom_osc_arguments"].split(), internal_variables, user_variables, dynamic_variables)
+                _cleaned_osc = osc.process_osc("", request.form["custom_osc_address"], request.form["custom_osc_arguments"].split(), internal_variables, user_variables, dynamic_variables)
+
+                if len(_cleaned_osc > 2):
+                    eos_query_count = _cleaned_osc[2]
+
+                _cleaned_osc_addr = _cleaned_osc[0]
+                _cleaned_osc_args = _cleaned_osc[1]
                 osc_client.send_message(_cleaned_osc_addr, _cleaned_osc_args)
         else:
             pass
@@ -298,46 +349,85 @@ def handle_osc():
         print("Received OSC address %s" % json_osc["address"])
         for internal_macro in internal_macros:
             # Internal macro triggers are always OSC commands, check the second word for the address.
-            if internal_macro.trigger.split(" ")[1] == json_osc["address"]:
-                # If the address matches, run the action.
+            # Check if the address matches the given address pattern and any specified arguments match the right argument pattern
+            address_match = False
+            args_match = True
+            print(internal_macro.trigger_address, json_osc["address"])
+            if re.match(internal_macro.trigger_address, json_osc["address"]):
+                address_match = True
+
+            # If any arguments do not match the pattern, or if a necessary argument doesn't exist, args do not match
+            for i in range(len(internal_macro.trigger_args)):
+                try:
+                    if re.match(internal_macro.trigger_args[i], json_osc["args"][i]):
+                        pass
+                    else:
+                        args_match = False
+                        break
+                except IndexError:
+                    args_match = False
+
+            cooldown_over = (datetime.datetime.now() - internal_macro.last_fire_time).total_seconds() >= macros.macro_cooldown_time
+
+            if address_match and args_match and cooldown_over:
+                # Address and args matched, run the action.
                 # Try to give it the requested argument if it exists
                 try:
-                    requested_arg = json_osc["args"][internal_macro.requested_arg_index]
+                    requested_arg = json_osc["args"]
+                    # requested_arg = json_osc["args"][internal_macro.requested_arg_index]
                 except IndexError:
                     requested_arg = ""
-                run_macro(internal_macro, osc_client, json_osc, user_macros, internal_macros, internal_variables, user_variables, dynamic_variables, requested_arg, debug=True)
+                internal_macros = run_macro(internal_macro.uuid, osc_client, json_osc, user_macros, internal_macros, internal_variables, user_variables, dynamic_variables, requested_arg, debug=True)
 
 
         for user_macro in user_macros:
             # Check if user macro relies on OSC for a trigger. If it does, see if it matches and run it if it does.
-            if user_macro.trigger.split(" ")[0] == "osc":
-                print(user_macro.trigger.split(" ")[1])
-                if user_macro.trigger.split(" ")[1] == json_osc["address"]:
+            if user_macro.trigger_type == "osc":
+                # Internal macro triggers are always OSC commands, check the second word for the address.
+                # Check if the address matches the given address pattern and any specified arguments match the right argument pattern
+                address_match = False
+                args_match = True
+                if re.match(user_macro.trigger_address, json_osc["address"]):
+                    address_match = True
+
+                # If any arguments do not match the pattern, or if a necessary argument doesn't exist, args do not match
+                for i in range(len(user_macro.trigger_args)):
+                    try:
+                        if re.match(user_macro.trigger_args[i], json_osc["args"][i]):
+                            pass
+                        else:
+                            args_match = False
+                            break
+                    except IndexError:
+                        args_match = False
+
+                cooldown_over = (datetime.datetime.now() - user_macro.last_fire_time).total_seconds() >= macros.macro_cooldown_time
+
+                if address_match and args_match and cooldown_over:
                     # If the address matches, check that the macro's cooldown is over, then run the action.
-                    print(("!!!!!!!!!!! ", (datetime.datetime.now() - user_macro.last_fire_time).total_seconds()))
-                    if (datetime.datetime.now() - user_macro.last_fire_time).total_seconds() >= macros.macro_cooldown_time:
-                        try:
-                            requested_arg = json_osc["args"][user_macro.requested_arg_index]
-                        except IndexError:
-                            requested_arg = 0
+                    try:
+                        requested_arg = json_osc["args"]
+                        # requested_arg = json_osc["args"][user_macro.requested_arg_index]
+                    except IndexError:
+                        requested_arg = 0
 
-                        run_macro(user_macro, osc_client, json_osc, user_macros, internal_macros,
-                                  internal_variables, user_variables, dynamic_variables, requested_arg, debug=True)
+                    internal_variables = []
+                    internal_macros = run_macro(user_macro.uuid, osc_client, json_osc, user_macros, internal_macros,
+                              internal_variables, user_variables, dynamic_variables, requested_arg, debug=True)
 
-            elif user_macro.trigger.split(" ")[0] == "cue":
+            elif user_macro.trigger_type == "cue":
                 # Handle macros which fire on a given cue
-                cue_number = process_cue_number(user_macro.trigger.split(" ")[1:])
-                print("/eos/out/event/cue/%s/fire" % user_macro.trigger.split(" ")[1], json_osc["address"])
-                if "/eos/out/event/cue/%s/fire" % user_macro.trigger.split(" ")[1] == json_osc["address"]:
+                if "/eos/out/event/cue/%s/fire" % user_macro.trigger_address == json_osc["address"]:
                     # Check that the macro_cooldown_time has elapsed since the macro was last fired.
                     if (datetime.datetime.now() - user_macro.last_fire_time).total_seconds() >= macros.macro_cooldown_time:
                         # If the address matches, run the action.
                         try:
-                            requested_arg = json_osc["args"][user_macro.requested_arg_index]
+                            requested_arg = json_osc["args"]
+                            # requested_arg = json_osc["args"][user_macro.requested_arg_index]
                         except IndexError:
                             requested_arg = 0
-
-                        run_macro(user_macro, osc_client, json_osc, user_macros, internal_macros,
+                        internal_variables = []
+                        internal_macros = run_macro(user_macro.uuid, osc_client, json_osc, user_macros, internal_macros,
                                   internal_variables, user_variables, dynamic_variables, requested_arg, debug=True)
 
         # Check incoming OSC against dynamic variables

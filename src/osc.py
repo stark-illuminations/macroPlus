@@ -17,8 +17,10 @@ def start_osc_client(network_config: list):
         print("Bad config")
 
 
-def process_osc(osc_addr: str, osc_args=None, internal_variables=None, user_variables=None, dynamic_variables=None, arg_input=None, debug=False):
+def process_osc(uuid, osc_addr: str, osc_args=None, internal_variables=None, user_variables=None, dynamic_variables=None, arg_input=None, eos_query_count=0, debug=False):
     """Process an OSC address and arguments, substituting in variables, then return them to be sent"""
+
+    old_eos_query_count = eos_query_count
 
     if debug:
         print("Processing OSC!")
@@ -56,10 +58,18 @@ def process_osc(osc_addr: str, osc_args=None, internal_variables=None, user_vari
     parsed_osc_addr = []
     for address_container in split_osc_addr:
         # Substitute in variables where appropriate
-        parsed_container = str(value.parse_script_word(address_container, internal_variables, user_variables, dynamic_variables, arg_input=arg_input, debug=debug))
+        parsed_container = value.parse_script_word(address_container, uuid, internal_variables, user_variables, dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count, debug=debug)
+
+        if isinstance(parsed_container, tuple):
+            if debug:
+                print("Updating eos_query_count to %i", parsed_container[1])
+            eos_query_count = parsed_container[1]
+            parsed_container = parsed_container[0]
+
         if parsed_container is None:
             parsed_container = "None"
-        parsed_osc_addr.append(parsed_container)
+
+        parsed_osc_addr.append(str(parsed_container))
 
     # Rebuild the OSC address
     final_osc_addr = "/" + "/".join(parsed_osc_addr)
@@ -67,13 +77,30 @@ def process_osc(osc_addr: str, osc_args=None, internal_variables=None, user_vari
     # Process arguments, substituting in variable values where appropriate
     parsed_osc_args = []
     for argument in osc_args:
-        parsed_arg = value.parse_script_word(argument, internal_variables, user_variables, dynamic_variables, arg_input=arg_input, debug=debug)
+        parsed_arg = value.parse_script_word(argument, uuid, internal_variables, user_variables,
+                                                   dynamic_variables, arg_input=arg_input,
+                                                   eos_query_count=eos_query_count, debug=debug)
+
+        if isinstance(parsed_arg, tuple):
+            if debug:
+                print("Updating eos_query_count to %i", parsed_arg[1])
+            eos_query_count = parsed_arg[1]
+            parsed_arg = parsed_arg[0]
+
+        if parsed_arg is None:
+            parsed_arg = "None"
+
         if parsed_arg is None:
             parsed_arg = "None"
         parsed_osc_args.append(parsed_arg)
+
+    print("Parsed args: ", parsed_osc_args)
     if debug:
         print("Final OSC address: %s" % final_osc_addr)
         print("Final OSC arguments: ", parsed_osc_args)
         print("Sending OSC message!")
 
-    return final_osc_addr, parsed_osc_args
+    if eos_query_count > old_eos_query_count:
+        return final_osc_addr, parsed_osc_args, eos_query_count
+    else:
+        return final_osc_addr, parsed_osc_args

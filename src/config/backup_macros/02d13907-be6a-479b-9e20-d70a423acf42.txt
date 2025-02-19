@@ -1,0 +1,1 @@
+set *ping_response* = @0@

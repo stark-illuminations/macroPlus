@@ -1,2 +1,14 @@
 <variables>
-    <variable><name>*ping_response*</name><value>0</value></variable><variable><name>*ping_arg*</name><value>46</value></variable><variable><name>*user_1*</name><value>False</value></variable><variable><name>*user_10*</name><value>True</value></variable></variables>
+    <variable>
+        <name>*ping_response*</name>
+        <value>131</value>
+    </variable>
+    <variable>
+        <name>*ping_arg*</name>
+        <value>131</value>
+    </variable>
+    <variable>
+        <name>*user_10*</name>
+        <value>True</value>
+    </variable>
+    <variable><name>*user_129*</name><value>Magenta</value></variable><variable><name>*user_130*</name><value>Orange</value></variable><variable><name>*user_131*</name><value>Purple</value></variable></variables>

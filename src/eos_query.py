@@ -1,5 +1,6 @@
 import re
 
+import value
 
 def parse_eos_query(raw_query) -> dict:
     """Take a raw eos query and break it into component parts"""
