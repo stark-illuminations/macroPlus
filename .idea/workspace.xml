@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Completed osc.py refactor, internal docs, and testing.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Completed value.py, added tests and internal documentation.">
       <change beforePath="$PROJECT_DIR$/src/osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/test_value.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_value.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/value.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/value.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/osc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc_server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -293,7 +290,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740065860414</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Completed value.py, added tests and internal documentation.">
+      <option name="closed" value="true" />
+      <created>1740069959037</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1740069959037</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -316,6 +321,7 @@
     <MESSAGE value="Added chained eos queries, updated how variables and macros are stored to avoid conflicts." />
     <MESSAGE value="Refactored osc.py and tests, improved internal documentation." />
     <MESSAGE value="Completed osc.py refactor, internal docs, and testing." />
-    <option name="LAST_COMMIT_MESSAGE" value="Completed osc.py refactor, internal docs, and testing." />
+    <MESSAGE value="Completed value.py, added tests and internal documentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Completed value.py, added tests and internal documentation." />
   </component>
 </project>

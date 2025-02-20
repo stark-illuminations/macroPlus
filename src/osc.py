@@ -124,21 +124,21 @@ def process_osc_args(uuid: str, osc_args: list, collected_variables: dict = None
         collected_variables = {}
 
     try:
-        internal_variables = collected_variables["internal_variables"]
+        _internal_variables = collected_variables["internal_variables"]
     except KeyError:
-        internal_variables = []
+        _internal_variables = []
         collected_variables["internal_variables"] = []
 
     try:
-        user_variables = collected_variables["user_variables"]
+        _user_variables = collected_variables["user_variables"]
     except KeyError:
-        user_variables = []
+        _user_variables = []
         collected_variables["user_variables"] = []
 
     try:
-        dynamic_variables = collected_variables["dynamic_variables"]
+        _dynamic_variables = collected_variables["dynamic_variables"]
     except KeyError:
-        dynamic_variables = []
+        _dynamic_variables = []
         collected_variables["dynamic_variables"] = []
 
     try:
