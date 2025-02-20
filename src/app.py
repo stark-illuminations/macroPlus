@@ -306,7 +306,9 @@ def network_config():
             if osc_client:
                 # If the console is configured, ping it
                 print("Pinging")
-                _cleaned_osc= osc.process_osc("", "/eos/ping", ["macroPlus"], internal_variables, user_variables, dynamic_variables)
+                osc_data = {"osc_addr": "/eos/ping", "osc_args": "macroPlus"}
+                variables = {"internal_variables": internal_variables, "user_variables": user_variables, "dynamic_variables": dynamic_variables}
+                _cleaned_osc= osc.process_osc("", osc_data, variables)
 
                 if len(_cleaned_osc > 2):
                     eos_query_count = _cleaned_osc[2]
@@ -317,7 +319,10 @@ def network_config():
         elif request.form["submit"] == "Send OSC":
             if osc_client:
                 # If the console is configured, send the custom OSC
-                _cleaned_osc = osc.process_osc("", request.form["custom_osc_address"], request.form["custom_osc_arguments"].split(), internal_variables, user_variables, dynamic_variables)
+                osc_data = {"osc_addr": request.form["custom_osc_address"], "osc_args": request.form["custom_osc_arguments"].split()}
+                variables = {"internal_variables": internal_variables, "user_variables": user_variables,
+                             "dynamic_variables": dynamic_variables}
+                _cleaned_osc = osc.process_osc("", osc_data, variables)
 
                 if len(_cleaned_osc) > 2:
                     eos_query_count = _cleaned_osc[2]

@@ -666,15 +666,15 @@ def run_script(script: list, osc_client, uuid, internal_macros: list, internal_v
                     # Syntax: osc /some/osc/address [argument_1] [argument_2] [argument_3]...
                     if debug:
                         print("- OSC command found on line %i. Processing!" % current_line)
-                    _cleaned_osc_addr, _cleaned_osc_args = osc.process_osc(uuid, split_line[1], split_line[2:],
-                                                                           internal_variables=internal_variables,
-                                                                           user_variables=user_variables,
-                                                                           dynamic_variables=dynamic_variables,
+                    osc_data = {"osc_addr": split_line[1],
+                                "osc_args": split_line[2:]}
+                    collected_variables = {"internal_variables": internal_variables, "user_variables": user_variables,
+                                 "dynamic_variables": dynamic_variables, "eos_query_count": eos_query_count}
+                    _cleaned_osc_addr, _cleaned_osc_args = osc.process_osc(uuid, osc_data, collected_variables,
                                                                            arg_input=arg_input,
-                                                                           eos_query_count=eos_query_count,
                                                                            debug=True)
+
                     osc_client.send_message(_cleaned_osc_addr, _cleaned_osc_args)
-                    pass
                 case "wait":
                     # Wait the listed amount of time in seconds
                     if debug:
