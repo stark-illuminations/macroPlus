@@ -43,7 +43,7 @@ def parse_script_word(script_word, uuid, internal_variables, user_variables, dyn
         print("Argument input: ", arg_input)
 
     try:
-        if re.match("#\w+#", script_word):
+        if re.match("#[\w_-]+#", script_word):
             # Internal variable
             # Ensure that variable is lowercase
             script_word = script_word.lower()
@@ -106,6 +106,7 @@ def parse_script_word(script_word, uuid, internal_variables, user_variables, dyn
                 if variable.name == internal_variable_name:
                     # Found the eos query!
                     # Increment the counter
+                    print("Incrementing the counter!")
                     eos_query_count += 1
                     return variable.var_value, eos_query_count
             # If the variable wasn't found, return None
@@ -120,7 +121,6 @@ def parse_script_word(script_word, uuid, internal_variables, user_variables, dyn
             # Ensure that argument is a valid index
             if debug:
                 print("- Word appears to be an argument input. Attempting to substitute...")
-                print(arg_input[int(script_word[1:-1])])
             try:
                 script_word = arg_input[int(script_word[1:-1])]
                 return script_word

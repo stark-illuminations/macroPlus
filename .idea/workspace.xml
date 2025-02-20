@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Added chained eos queries, updated how variables and macros are stored to avoid conflicts.">
-      <change beforePath="$PROJECT_DIR$/.idea/macroPlus.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/macroPlus.iml" afterDir="false" />
+    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Refactored osc.py and tests, improved internal documentation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/text.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/variables.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/variables.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tests/test_osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_osc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/value.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/value.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,6 +70,8 @@
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
     "Python tests.pytest for test_osc.test_process_osc.executor": "Run",
+    "Python tests.pytest for test_osc.test_process_osc_address.executor": "Run",
+    "Python tests.pytest for test_osc.test_process_osc_args.executor": "Run",
     "Python tests.pytest for test_osc.test_start_osc_client.executor": "Run",
     "Python tests.pytest for test_osc_server.test_eos_out.executor": "Run",
     "Python tests.pytest for test_osc_server.test_start_osc_server.executor": "Run",
@@ -109,53 +107,7 @@
       <recent name="$PROJECT_DIR$/.venv" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest in test_osc.py">
-    <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="macroPlus" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.11 (macroPlus)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/app.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="osc_server" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="macroPlus" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.11 (macroPlus)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/osc_server.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python tests.pytest for test_osc.test_start_osc_client">
     <configuration name="pytest for test_osc.test_process_osc" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
@@ -170,6 +122,57 @@
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;test_osc.test_process_osc&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_osc.test_process_osc_address" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="macroPlus" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_osc.test_process_osc_address&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_osc.test_process_osc_args" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="macroPlus" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_osc.test_process_osc_args&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_osc.test_start_osc_client" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="macroPlus" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_osc.test_start_osc_client&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -190,37 +193,20 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest in tests" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="macroPlus" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Python.app" />
-      <item itemvalue="Python.osc_server" />
       <item itemvalue="Python tests.pytest for test_osc.test_process_osc" />
+      <item itemvalue="Python tests.pytest for test_osc.test_process_osc_address" />
+      <item itemvalue="Python tests.pytest for test_osc.test_process_osc_args" />
+      <item itemvalue="Python tests.pytest for test_osc.test_start_osc_client" />
       <item itemvalue="Python tests.pytest in test_osc.py" />
-      <item itemvalue="Python tests.pytest in tests" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.pytest in test_osc.py" />
+        <item itemvalue="Python tests.pytest for test_osc.test_start_osc_client" />
         <item itemvalue="Python tests.pytest for test_osc.test_process_osc" />
-        <item itemvalue="Python tests.pytest in tests" />
-        <item itemvalue="Python.app" />
-        <item itemvalue="Python.osc_server" />
+        <item itemvalue="Python tests.pytest for test_osc.test_process_osc_address" />
+        <item itemvalue="Python tests.pytest for test_osc.test_process_osc_args" />
+        <item itemvalue="Python tests.pytest in test_osc.py" />
       </list>
     </recent_temporary>
   </component>
@@ -288,7 +274,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739982835461</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Refactored osc.py and tests, improved internal documentation.">
+      <option name="closed" value="true" />
+      <created>1740021333965</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1740021333965</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -309,6 +303,7 @@
     <MESSAGE value="Cleaned several bugs in the process of testing." />
     <MESSAGE value="Added eos query base. Eos queries are now built, and internal variable support is improved." />
     <MESSAGE value="Added chained eos queries, updated how variables and macros are stored to avoid conflicts." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added chained eos queries, updated how variables and macros are stored to avoid conflicts." />
+    <MESSAGE value="Refactored osc.py and tests, improved internal documentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored osc.py and tests, improved internal documentation." />
   </component>
 </project>

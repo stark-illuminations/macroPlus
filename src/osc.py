@@ -11,11 +11,12 @@ from pythonosc import udp_client
 import value
 
 
-def start_osc_client(network_config: list) -> (str or tuple):
+def start_osc_client(network_config: list, debug = False) -> (str or tuple):
     """
     Start a new OSC server and client to connect to the console.
 
     :param list network_config: The IP address and port to send OSC messages to
+    :param bool debug: Whether to print debug messages
     """
     if isinstance(network_config, list):
         try:
@@ -23,31 +24,27 @@ def start_osc_client(network_config: list) -> (str or tuple):
             osc_client.send_message("/eos/ping", "macroPlus")
             return osc_client
         except (ValueError, IndexError):
-            print("Bad config")
+            if debug:
+                print("Bad config")
             return "Invalid network config. Try again."
     else:
-        print("Bad config")
+        if debug:
+            print("Bad config")
         return "Invalid network config. Try again."
 
 
-def process_osc(uuid: str, osc_data: dict, collected_variables: dict = None,
-                arg_input: dict = None, debug: bool = False) -> tuple:
+def process_osc_address(uuid: str, osc_addr: str, collected_variables: dict = None,
+                        arg_input: dict = None, debug: bool = False):
     """
-    Process an OSC address and arguments, substituting in collected_variables,
-    then return them to be sent.
+    Process an OSC address and return it with variables substituted in.
+
     :param str uuid: The UUID of the macro that is currently running.
-    :param dict osc_data: The OSC message to process, with keys "osc_addr", "osc_args"
+    :param str osc_addr: The OSC address to process.
     :param dict collected_variables: The set of internal, dynamic, and user variables,
         plus eos_query_count
     :param dict arg_input: The argument input to the macro, if any
     :param bool debug: Whether to print debug messages
     """
-
-    osc_addr = osc_data["osc_addr"]
-    try:
-        osc_args = osc_data["osc_args"]
-    except KeyError:
-        osc_args = []
 
     if collected_variables is None:
         collected_variables = {}
@@ -71,16 +68,6 @@ def process_osc(uuid: str, osc_data: dict, collected_variables: dict = None,
         eos_query_count = collected_variables["eos_query_count"]
     except KeyError:
         eos_query_count = 0
-
-    old_eos_query_count = eos_query_count
-
-    if debug:
-        print("Processing OSC!")
-        print(f"Initial OSC Address: {osc_addr}")
-        print("Initial OSC arguments: ", osc_args)
-
-    if isinstance(osc_args, str):
-        osc_args = [osc_args]
 
     # Split the OSC address and look for variables
     split_osc_addr = osc_addr.split("/")
@@ -118,12 +105,57 @@ def process_osc(uuid: str, osc_data: dict, collected_variables: dict = None,
     # Rebuild the OSC address
     final_osc_addr = "/" + "/".join(parsed_osc_addr)
 
+    return final_osc_addr, eos_query_count
+
+
+def process_osc_args(uuid: str, osc_args: list, collected_variables: dict = None,
+                arg_input: dict = None, debug: bool = True):
+    """
+    Process a list of OSC arguments and return it with variables substituted in.
+
+    :param str uuid: The UUID of the macro that is currently running.
+    :param list osc_args: The OSC arguments to process.
+    :param dict collected_variables: The set of internal, dynamic, and user variables,
+        plus eos_query_count
+    :param dict arg_input: The argument input to the macro, if any
+    :param bool debug: Whether to print debug messages
+    """
+    if isinstance(osc_args, str):
+        osc_args = [osc_args]
+
+    if collected_variables is None:
+        collected_variables = {}
+
+    try:
+        internal_variables = collected_variables["internal_variables"]
+    except KeyError:
+        internal_variables = []
+        collected_variables["internal_variables"] = []
+
+    try:
+        user_variables = collected_variables["user_variables"]
+    except KeyError:
+        user_variables = []
+        collected_variables["user_variables"] = []
+
+    try:
+        dynamic_variables = collected_variables["dynamic_variables"]
+    except KeyError:
+        dynamic_variables = []
+        collected_variables["dynamic_variables"] = []
+
+    try:
+        eos_query_count = collected_variables["eos_query_count"]
+    except KeyError:
+        eos_query_count = 0
+        collected_variables["eos_query_count"] = 0
+
     # Process arguments, substituting in variable values where appropriate
     parsed_osc_args = []
     for argument in osc_args:
         parsed_arg = value.parse_script_word(argument, uuid, internal_variables, user_variables,
-                                                   dynamic_variables, arg_input=arg_input,
-                                                   eos_query_count=eos_query_count, debug=debug)
+                                             dynamic_variables, arg_input=arg_input,
+                                             eos_query_count=eos_query_count, debug=debug)
 
         if isinstance(parsed_arg, tuple):
             if debug:
@@ -135,6 +167,68 @@ def process_osc(uuid: str, osc_data: dict, collected_variables: dict = None,
             parsed_arg = "None"
 
         parsed_osc_args.append(parsed_arg)
+
+    return parsed_osc_args, eos_query_count
+
+
+def process_osc(uuid: str, osc_data: dict, collected_variables: dict = None,
+                arg_input: dict = None, debug: bool = False) -> tuple:
+    """
+    Process an OSC address and arguments, substituting in collected_variables,
+    then return them to be sent.
+    :param str uuid: The UUID of the macro that is currently running.
+    :param dict osc_data: The OSC message to process, with keys "osc_addr", "osc_args"
+    :param dict collected_variables: The set of internal, dynamic, and user variables,
+        plus eos_query_count
+    :param dict arg_input: The argument input to the macro, if any
+    :param bool debug: Whether to print debug messages
+    """
+
+    osc_addr = osc_data["osc_addr"]
+    try:
+        osc_args = osc_data["osc_args"]
+    except KeyError:
+        osc_args = []
+
+    if collected_variables is None:
+        collected_variables = {}
+
+    try:
+        _internal_variables = collected_variables["internal_variables"]
+    except KeyError:
+        collected_variables["internal_variables"] = []
+
+    try:
+        _user_variables = collected_variables["user_variables"]
+    except KeyError:
+        collected_variables["user_variables"] = []
+
+    try:
+        _dynamic_variables = collected_variables["dynamic_variables"]
+    except KeyError:
+        collected_variables["dynamic_variables"] = []
+
+    try:
+        eos_query_count = collected_variables["eos_query_count"]
+    except KeyError:
+        eos_query_count = 0
+        collected_variables["eos_query_count"] = 0
+
+    old_eos_query_count = eos_query_count
+
+    if debug:
+        print("Processing OSC!")
+        print(f"Initial OSC Address: {osc_addr}")
+        print("Initial OSC arguments: ", osc_args)
+
+    if isinstance(osc_args, str):
+        osc_args = [osc_args]
+
+    final_osc_addr, eos_query_count = process_osc_address(uuid, osc_addr, collected_variables,
+                                                          arg_input=arg_input, debug=debug)
+    collected_variables["eos_query_count"] = eos_query_count
+    parsed_osc_args, eos_query_count = process_osc_args(uuid, osc_args, collected_variables,
+                                                        arg_input=arg_input, debug=debug)
 
     print("Parsed args: ", parsed_osc_args)
     if debug:
