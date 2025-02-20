@@ -85,11 +85,8 @@ def process_osc_address(uuid: str, osc_addr: str, collected_variables: dict = No
     parsed_osc_addr = []
     for address_container in split_osc_addr:
         # Substitute in variables where appropriate
-        parsed_container = value.parse_script_word(address_container, uuid, internal_variables,
-                                                   user_variables, dynamic_variables,
-                                                   arg_input=arg_input,
-                                                   eos_query_count=eos_query_count,
-                                                   debug=debug)
+        parsed_container = value.parse_script_word(address_container, uuid, collected_variables,
+                                                   arg_input=arg_input, debug=debug)
 
         if isinstance(parsed_container, tuple):
             if debug:
@@ -153,9 +150,8 @@ def process_osc_args(uuid: str, osc_args: list, collected_variables: dict = None
     # Process arguments, substituting in variable values where appropriate
     parsed_osc_args = []
     for argument in osc_args:
-        parsed_arg = value.parse_script_word(argument, uuid, internal_variables, user_variables,
-                                             dynamic_variables, arg_input=arg_input,
-                                             eos_query_count=eos_query_count, debug=debug)
+        parsed_arg = value.parse_script_word(argument, uuid, collected_variables,
+                                             arg_input=arg_input, debug=debug)
 
         if isinstance(parsed_arg, tuple):
             if debug:

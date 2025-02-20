@@ -20,7 +20,9 @@ def check_condition(statement: list, uuid, internal_variables, user_variables, d
 
     if len(statement) == 1:
         # If the script word represents a variable that exists, or is any raw value, return True
-        result = value.parse_script_word(statement[0], uuid, internal_variables, user_variables, dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+        collected_variables = {"internal_variables": internal_variables, "user_variables": user_variables,
+                               "dynamic_variables": dynamic_variables, "eos_query_count": eos_query_count}
+        result = value.parse_script_word(statement[0], uuid, collected_variables, arg_input=arg_input)
 
         if isinstance(result, tuple):
             # Word was an eos query, set the eos_query_count
@@ -39,16 +41,22 @@ def check_condition(statement: list, uuid, internal_variables, user_variables, d
         # Statement is assumed to be comparing two values, check for known operators. If operator is unknown, return False.
         match statement[1]:
             case "==":
-                first_value = value.parse_script_word(statement[0], uuid, internal_variables, user_variables, dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                collected_variables = {"internal_variables": internal_variables,
+                                       "user_variables": user_variables,
+                                       "dynamic_variables": dynamic_variables,
+                                       "eos_query_count": eos_query_count}
+
+                first_value = value.parse_script_word(statement[0], uuid, collected_variables, arg_input=arg_input)
 
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
                         print("Updating eos_query_count to %i" % first_value[1])
                     eos_query_count = first_value[1]
+                    collected_variables["eos_query_count"] = eos_query_count
                     first_value = first_value[0]
 
-                second_value = value.parse_script_word(statement[2], uuid, internal_variables, user_variables, dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                second_value = value.parse_script_word(statement[2], uuid, collected_variables, arg_input=arg_input)
 
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
@@ -62,17 +70,23 @@ def check_condition(statement: list, uuid, internal_variables, user_variables, d
                 else:
                     initial_result = False
             case "===":
-                first_value = value.parse_script_word(statement[0], uuid, internal_variables, user_variables,
-                                                      dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                collected_variables = {"internal_variables": internal_variables,
+                                       "user_variables": user_variables,
+                                       "dynamic_variables": dynamic_variables,
+                                       "eos_query_count": eos_query_count}
+
+                first_value = value.parse_script_word(statement[0], uuid, collected_variables,
+                                                      arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
                         print("Updating eos_query_count to %i" % first_value[1])
                     eos_query_count = first_value[1]
+                    collected_variables["eos_query_count"] = eos_query_count
                     first_value = first_value[0]
 
-                second_value = value.parse_script_word(statement[2], uuid, internal_variables, user_variables,
-                                                       dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                second_value = value.parse_script_word(statement[2], uuid, collected_variables,
+                                                       arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
@@ -80,22 +94,26 @@ def check_condition(statement: list, uuid, internal_variables, user_variables, d
                     eos_query_count = second_value[1]
                     second_value = second_value[0]
 
-                if ((first_value == second_value)) and (type(first_value) is type(second_value)):
+                if (first_value == second_value) and (type(first_value) is type(second_value)):
                     initial_result = True
                 else:
                     initial_result = False
             case ">":
-                first_value = value.parse_script_word(statement[0], uuid, internal_variables, user_variables,
-                                                      dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                collected_variables = {"internal_variables": internal_variables,
+                                       "user_variables": user_variables,
+                                       "dynamic_variables": dynamic_variables,
+                                       "eos_query_count": eos_query_count}
+
+                first_value = value.parse_script_word(statement[0], uuid, collected_variables, arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
                         print("Updating eos_query_count to %i" % first_value[1])
                     eos_query_count = first_value[1]
+                    collected_variables["eos_query_count"] = eos_query_count
                     first_value = first_value[0]
 
-                second_value = value.parse_script_word(statement[2], uuid, internal_variables, user_variables,
-                                                       dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                second_value = value.parse_script_word(statement[2], uuid, collected_variables, arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
@@ -108,17 +126,23 @@ def check_condition(statement: list, uuid, internal_variables, user_variables, d
                 else:
                     initial_result = False
             case ">=":
-                first_value = value.parse_script_word(statement[0], uuid, internal_variables, user_variables,
-                                                      dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                collected_variables = {"internal_variables": internal_variables,
+                                       "user_variables": user_variables,
+                                       "dynamic_variables": dynamic_variables,
+                                       "eos_query_count": eos_query_count}
+
+                first_value = value.parse_script_word(statement[0], uuid, collected_variables,
+                                                      arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
                         print("Updating eos_query_count to %i" % first_value[1])
                     eos_query_count = first_value[1]
+                    collected_variables["eos_query_count"] = eos_query_count
                     first_value = first_value[0]
 
-                second_value = value.parse_script_word(statement[2], uuid, internal_variables, user_variables,
-                                                       dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                second_value = value.parse_script_word(statement[2], uuid, collected_variables,
+                                                       arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
@@ -131,17 +155,23 @@ def check_condition(statement: list, uuid, internal_variables, user_variables, d
                 else:
                     initial_result = False
             case "<":
-                first_value = value.parse_script_word(statement[0], uuid, internal_variables, user_variables,
-                                                      dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                collected_variables = {"internal_variables": internal_variables,
+                                       "user_variables": user_variables,
+                                       "dynamic_variables": dynamic_variables,
+                                       "eos_query_count": eos_query_count}
+
+                first_value = value.parse_script_word(statement[0], uuid, collected_variables,
+                                                      arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
                         print("Updating eos_query_count to %i" % first_value[1])
                     eos_query_count = first_value[1]
+                    collected_variables["eos_query_count"] = eos_query_count
                     first_value = first_value[0]
 
-                second_value = value.parse_script_word(statement[2], uuid, internal_variables, user_variables,
-                                                       dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                second_value = value.parse_script_word(statement[2], uuid, collected_variables,
+                                                       arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
@@ -154,17 +184,23 @@ def check_condition(statement: list, uuid, internal_variables, user_variables, d
                 else:
                     initial_result = False
             case "<=":
-                first_value = value.parse_script_word(statement[0], uuid, internal_variables, user_variables,
-                                                      dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                collected_variables = {"internal_variables": internal_variables,
+                                       "user_variables": user_variables,
+                                       "dynamic_variables": dynamic_variables,
+                                       "eos_query_count": eos_query_count}
+
+                first_value = value.parse_script_word(statement[0], uuid, collected_variables,
+                                                      arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
                         print("Updating eos_query_count to %i" % first_value[1])
                     eos_query_count = first_value[1]
+                    collected_variables["eos_query_count"] = eos_query_count
                     first_value = first_value[0]
 
-                second_value = value.parse_script_word(statement[2], uuid, internal_variables, user_variables,
-                                                       dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                second_value = value.parse_script_word(statement[2], uuid, collected_variables,
+                                                       arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
@@ -177,17 +213,23 @@ def check_condition(statement: list, uuid, internal_variables, user_variables, d
                 else:
                     initial_result = False
             case "!=":
-                first_value = value.parse_script_word(statement[0], uuid, internal_variables, user_variables,
-                                                      dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                collected_variables = {"internal_variables": internal_variables,
+                                       "user_variables": user_variables,
+                                       "dynamic_variables": dynamic_variables,
+                                       "eos_query_count": eos_query_count}
+
+                first_value = value.parse_script_word(statement[0], uuid, collected_variables,
+                                                      arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
                         print("Updating eos_query_count to %i" % first_value[1])
                     eos_query_count = first_value[1]
+                    collected_variables["eos_query_count"] = eos_query_count
                     first_value = first_value[0]
 
-                second_value = value.parse_script_word(statement[2], uuid, internal_variables, user_variables,
-                                                       dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                second_value = value.parse_script_word(statement[2], uuid, collected_variables,
+                                                       arg_input=arg_input)
                 if isinstance(first_value, tuple):
                     # Word was an eos query, set the eos_query_count
                     if debug:
@@ -233,8 +275,13 @@ def eval_expression(expression, uuid, internal_variables, user_variables, dynami
     if len(expression) == 1:
         if debug:
             print("Expression is one word long. Returning evaluated word.")
-        expression_value = value.parse_script_word(expression[0], uuid, internal_variables, user_variables,
-                                              dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+
+        collected_variables = {"internal_variables": internal_variables,
+                               "user_variables": user_variables,
+                               "dynamic_variables": dynamic_variables,
+                               "eos_query_count": eos_query_count}
+        expression_value = value.parse_script_word(expression[0], uuid, collected_variables,
+                                                   arg_input=arg_input)
 
         if isinstance(expression_value, tuple):
             # Word was an eos query, set the eos_query_count
@@ -255,17 +302,23 @@ def eval_expression(expression, uuid, internal_variables, user_variables, dynami
             if debug:
                 print("Expression is attempting addition.")
 
-            first_value = value.parse_script_word(expression[0], uuid, internal_variables, user_variables,
-                                                  dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+            collected_variables = {"internal_variables": internal_variables,
+                                   "user_variables": user_variables,
+                                   "dynamic_variables": dynamic_variables,
+                                   "eos_query_count": eos_query_count}
+
+            first_value = value.parse_script_word(expression[0], uuid, collected_variables, arg_input=arg_input)
+
             if isinstance(first_value, tuple):
                 # Word was an eos query, set the eos_query_count
                 if debug:
                     print("Updating eos_query_count to %i" % first_value[1])
                 eos_query_count = first_value[1]
+                collected_variables["eos_query_count"] = eos_query_count
                 first_value = first_value[0]
 
-            second_value = value.parse_script_word(expression[2], uuid, internal_variables, user_variables,
-                                                   dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+            second_value = value.parse_script_word(expression[2], uuid, collected_variables,
+                                                   arg_input=arg_input)
 
             old_eos_query_count = eos_query_count
 
@@ -290,17 +343,23 @@ def eval_expression(expression, uuid, internal_variables, user_variables, dynami
                     return str(first_value) + str(second_value)
 
         elif expression[1] == "-":
-            first_value = value.parse_script_word(expression[0], uuid, internal_variables, user_variables,
-                                                  dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+            collected_variables = {"internal_variables": internal_variables,
+                                   "user_variables": user_variables,
+                                   "dynamic_variables": dynamic_variables,
+                                   "eos_query_count": eos_query_count}
+
+            first_value = value.parse_script_word(expression[0], uuid, collected_variables,
+                                                  arg_input=arg_input)
             if isinstance(first_value, tuple):
                 # Word was an eos query, set the eos_query_count
                 if debug:
                     print("Updating eos_query_count to %i" % first_value[1])
                 eos_query_count = first_value[1]
+                collected_variables["eos_query_count"] = eos_query_count
                 first_value = first_value[0]
 
-            second_value = value.parse_script_word(expression[2], uuid, internal_variables, user_variables,
-                                                   dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+            second_value = value.parse_script_word(expression[2], uuid, collected_variables,
+                                                   arg_input=arg_input)
 
             old_eos_query_count = eos_query_count
 
@@ -681,8 +740,14 @@ def run_script(script: list, osc_client, uuid, internal_macros: list, internal_v
                         print("- Wait command found on line %i. Processing!" % current_line)
                         print("-- Wait time: %s" % line_statement[0])
                     try:
-                        sleep_duration = value.parse_script_word(line_statement[0], uuid, internal_variables, user_variables,
-                                                               dynamic_variables, arg_input=arg_input, eos_query_count=eos_query_count)
+                        collected_variables = {"internal_variables": internal_variables,
+                                               "user_variables": user_variables,
+                                               "dynamic_variables": dynamic_variables,
+                                               "eos_query_count": eos_query_count}
+
+                        sleep_duration = value.parse_script_word(line_statement[0], uuid,
+                                                                 collected_variables,
+                                                                 arg_input=arg_input)
 
                         if isinstance(sleep_duration, tuple):
                             if debug:
@@ -730,9 +795,14 @@ def run_script(script: list, osc_client, uuid, internal_macros: list, internal_v
                     if debug:
                         print("- New command found at line %i. Processing!" % current_line)
 
-                    variable_value = value.parse_script_word(line_statement[2], uuid, internal_variables,
-                                                                            user_variables, dynamic_variables,
-                                                                            arg_input=arg_input, eos_query_count=eos_query_count, debug=debug)
+                    collected_variables = {"internal_variables": internal_variables,
+                                           "user_variables": user_variables,
+                                           "dynamic_variables": dynamic_variables,
+                                           "eos_query_count": eos_query_count}
+
+                    variable_value = value.parse_script_word(line_statement[2], uuid,
+                                                             collected_variables,
+                                                             arg_input=arg_input, debug=debug)
 
                     if isinstance(variable_value, tuple):
                         if debug:
@@ -748,9 +818,13 @@ def run_script(script: list, osc_client, uuid, internal_macros: list, internal_v
                     if debug:
                         print("- Newint command found at line %i. Processing!" % current_line)
 
-                    variable_value = value.parse_script_word(line_statement[2], uuid, internal_variables,
-                                                             user_variables, dynamic_variables,
-                                                             arg_input=arg_input, eos_query_count=eos_query_count, debug=debug)
+                    collected_variables = {"internal_variables": internal_variables,
+                                           "user_variables": user_variables,
+                                           "dynamic_variables": dynamic_variables,
+                                           "eos_query_count": eos_query_count}
+
+                    variable_value = value.parse_script_word(line_statement[2], uuid, collected_variables,
+                                                             arg_input=arg_input, debug=debug)
 
                     if isinstance(variable_value, tuple):
                         if debug:
