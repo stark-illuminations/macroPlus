@@ -86,6 +86,7 @@ def test_process_osc_address():
     # Eos Queries and eos_query_count incrementing
     assert (osc.process_osc_address(new_uuid, "/eos/eos(test)/eos(test_2)", test_variables,
                                     arg_input=arg_input) == ("/eos/ping/pong", 2))
+    test_variables["eos_query_count"] = 0
     assert (osc.process_osc_address(new_uuid, "/eos/eos(test)", test_variables,
                                     arg_input=arg_input) == ("/eos/ping", 1))
     test_variables["eos_query_count"] = 1
@@ -166,6 +167,7 @@ def test_process_osc_args():
     # Eos Queries and eos_query_count incrementing
     assert (osc.process_osc_args(new_uuid, ["eos(test)", "eos(test)"], test_variables,
                                  arg_input=arg_input) == (["ping", "pong"], 2))
+    test_variables["eos_query_count"] = 0
     assert (osc.process_osc_args(new_uuid, ["eos(test)"], test_variables, arg_input=arg_input)
             == (["ping"], 1))
     test_variables["eos_query_count"] = 1
@@ -181,18 +183,18 @@ def test_process_osc():
     new_uuid = uuid.uuid4()
     # Without variables
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/ping", "osc_args": ["Test"]})
-            == ("/eos/ping", ["Test"]))
+            == ("/eos/ping", ["Test"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "eos/ping", "osc_args": ["Test"]})
-            == ("/eos/ping", ["Test"]))
+            == ("/eos/ping", ["Test"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "eos/ping/", "osc_args": ["Test"]})
-            == ("/eos/ping", ["Test"]))
+            == ("/eos/ping", ["Test"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/ping/", "osc_args": ["Test"]})
-            == ("/eos/ping", ["Test"]))
+            == ("/eos/ping", ["Test"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/ping", "osc_args": "Test"})
-            == ("/eos/ping", ["Test"]))
+            == ("/eos/ping", ["Test"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/ping",
                                        "osc_args": ["Test", "Second Argument"]})
-            == ("/eos/ping", ["Test", "Second Argument"]))
+            == ("/eos/ping", ["Test", "Second Argument"], 0))
 
     # With variables
     internal_variables = [variables.InternalVar(f"#internal_0_{new_uuid}#", "ping"),
@@ -206,57 +208,57 @@ def test_process_osc():
     # Internal variables
     assert (osc.process_osc(new_uuid, {"osc_addr": f"/eos/#internal_0_{new_uuid}#",
                                        "osc_args": f"#internal_0_{new_uuid}#"}, test_variables,
-                            arg_input=arg_input) == ("/eos/ping", ["ping"]))
+                            arg_input=arg_input) == ("/eos/ping", ["ping"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/#internal_1#",
                                        "osc_args": f"#internal_0_{new_uuid}#"}, test_variables,
-                            arg_input=arg_input) == ("/eos/None", ["ping"]))
+                            arg_input=arg_input) == ("/eos/None", ["ping"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": f"/eos/#internal_0_{new_uuid}#",
                                        "osc_args": "#internal_1#"}, test_variables,
-                            arg_input=arg_input) == ("/eos/ping", ["None"]))
+                            arg_input=arg_input) == ("/eos/ping", ["None"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/#internal_1#",
                                        "osc_args": "#internal_1#"}, test_variables,
-                            arg_input=arg_input) == ("/eos/None", ["None"]))
+                            arg_input=arg_input) == ("/eos/None", ["None"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/#internal_1#",
                                        "osc_args": ["#internal_1#", f"#internal_0_{new_uuid}#"]},
-                            test_variables, arg_input=arg_input) == ("/eos/None", ["None", "ping"]))
+                            test_variables, arg_input=arg_input) == ("/eos/None", ["None", "ping"], 0))
 
     # User variables
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/*user_0*", "osc_args": "*user_0*"},
-                            test_variables, arg_input=arg_input) == ("/eos/ping", ["ping"]))
+                            test_variables, arg_input=arg_input) == ("/eos/ping", ["ping"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/*user_1*", "osc_args": "*user_0*"},
-                            test_variables, arg_input=arg_input) == ("/eos/None", ["ping"]))
+                            test_variables, arg_input=arg_input) == ("/eos/None", ["ping"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/*user_0*", "osc_args": "*user_1*"},
-                            test_variables, arg_input=arg_input) == ("/eos/ping", ["None"]))
+                            test_variables, arg_input=arg_input) == ("/eos/ping", ["None"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/*user_1*", "osc_args": "*user_1*"},
-                            test_variables, arg_input=arg_input) == ("/eos/None", ["None"]))
+                            test_variables, arg_input=arg_input) == ("/eos/None", ["None"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/*user_1*",
                                        "osc_args": ["*user_1*", "*user_0*"]}, test_variables,
-                            arg_input=arg_input) == ("/eos/None", ["None", "ping"]))
+                            arg_input=arg_input) == ("/eos/None", ["None", "ping"], 0))
 
     # Dynamic variables
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/%cue%", "osc_args": "%cue%"},
-                            test_variables, arg_input=arg_input) == ("/eos/ping", ["ping"]))
+                            test_variables, arg_input=arg_input) == ("/eos/ping", ["ping"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/%random%", "osc_args": "%cue%"},
-                            test_variables, arg_input=arg_input) == ("/eos/None", ["ping"]))
+                            test_variables, arg_input=arg_input) == ("/eos/None", ["ping"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/%cue%", "osc_args": "%random%"},
-                            test_variables, arg_input=arg_input) == ("/eos/ping", ["None"]))
+                            test_variables, arg_input=arg_input) == ("/eos/ping", ["None"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/%random%", "osc_args": "%random%"},
-                            test_variables, arg_input=arg_input) == ("/eos/None", ["None"]))
+                            test_variables, arg_input=arg_input) == ("/eos/None", ["None"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/%random%",
                                        "osc_args": ["%random%", "%cue%"]}, test_variables,
-                            arg_input=arg_input) == ("/eos/None", ["None", "ping"]))
+                            arg_input=arg_input) == ("/eos/None", ["None", "ping"], 0))
 
     # Argument inputs
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/@0@", "osc_args": "@0@"}, test_variables,
-                            arg_input=arg_input) == ("/eos/ping", ["ping"]))
+                            arg_input=arg_input) == ("/eos/ping", ["ping"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/@1@", "osc_args": "@0@"}, test_variables,
-                            arg_input=arg_input) == ("/eos/None", ["ping"]))
+                            arg_input=arg_input) == ("/eos/None", ["ping"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/@0@", "osc_args": "@1@"}, test_variables,
-                            arg_input=arg_input) == ("/eos/ping", ["None"]))
+                            arg_input=arg_input) == ("/eos/ping", ["None"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/@1@", "osc_args": "@1@"}, test_variables,
-                            arg_input=arg_input) == ("/eos/None", ["None"]))
+                            arg_input=arg_input) == ("/eos/None", ["None"], 0))
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/@1@", "osc_args": ["@1@", "@0@"]},
-                            test_variables, arg_input=arg_input) == ("/eos/None", ["None", "ping"]))
+                            test_variables, arg_input=arg_input) == ("/eos/None", ["None", "ping"], 0))
 
     # Eos Queries and eos_query_count incrementing
     assert (osc.process_osc(new_uuid, {"osc_addr": "/eos/eos(test)", "osc_args": ["eos(test)"]},

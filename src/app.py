@@ -324,11 +324,9 @@ def network_config():
                              "dynamic_variables": dynamic_variables}
                 _cleaned_osc = osc.process_osc("", osc_data, variables)
 
-                if len(_cleaned_osc) > 2:
-                    eos_query_count = _cleaned_osc[2]
-
                 _cleaned_osc_addr = _cleaned_osc[0]
                 _cleaned_osc_args = _cleaned_osc[1]
+                eos_query_count = _cleaned_osc[2]
                 osc_client.send_message(_cleaned_osc_addr, _cleaned_osc_args)
         else:
             pass

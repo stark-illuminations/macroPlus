@@ -92,6 +92,7 @@ def process_osc_address(uuid: str, osc_addr: str, collected_variables: dict = No
             if debug:
                 print("Updating eos_query_count to %i", parsed_container[1])
             eos_query_count = parsed_container[1]
+            collected_variables["eos_query_count"] = eos_query_count
             parsed_container = parsed_container[0]
 
         if parsed_container is None:
@@ -157,6 +158,7 @@ def process_osc_args(uuid: str, osc_args: list, collected_variables: dict = None
             if debug:
                 print("Updating eos_query_count to %i", parsed_arg[1])
             eos_query_count = parsed_arg[1]
+            collected_variables["eos_query_count"] = eos_query_count
             parsed_arg = parsed_arg[0]
 
         if parsed_arg is None:
@@ -232,7 +234,4 @@ def process_osc(uuid: str, osc_data: dict, collected_variables: dict = None,
         print("Final OSC arguments: ", parsed_osc_args)
         print("Sending OSC message!")
 
-    if eos_query_count > old_eos_query_count:
-        return final_osc_addr, parsed_osc_args, eos_query_count
-
-    return final_osc_addr, parsed_osc_args
+    return final_osc_addr, parsed_osc_args, eos_query_count

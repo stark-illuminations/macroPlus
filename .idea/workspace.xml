@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Completed value.py, added tests and internal documentation.">
+    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Completed osc_server.py, added internal documentation.">
+      <change afterPath="$PROJECT_DIR$/src/conditions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/tests/test_conditions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/osc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tests/test_osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_osc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tests/test_scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_scripting.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,11 +81,17 @@
     "Python tests.pytest for test_osc_server.test_start_osc_server.executor": "Run",
     "Python tests.pytest for test_scripting.test_check_condition.executor": "Run",
     "Python tests.pytest for test_scripting.test_eval_expression.executor": "Run",
+    "Python tests.pytest for test_scripting.test_handle_endloop.executor": "Run",
     "Python tests.pytest for test_scripting.test_handle_string_end.executor": "Run",
+    "Python tests.pytest for test_scripting.test_pre_process_script_line.executor": "Run",
+    "Python tests.pytest for test_scripting.test_run_script.executor": "Run",
     "Python tests.pytest for test_value.test_parse_script_word.executor": "Run",
     "Python tests.pytest for test_value.test_parse_value.executor": "Run",
     "Python tests.pytest for test_value.test_regex_osc_trigger.executor": "Run",
+    "Python tests.pytest in test_conditions.py.executor": "Run",
     "Python tests.pytest in test_osc.py.executor": "Run",
+    "Python tests.pytest in test_osc_server.py.executor": "Run",
+    "Python tests.pytest in test_scripting.py.executor": "Run",
     "Python tests.pytest in test_value.py.executor": "Run",
     "Python tests.pytest in tests.executor": "Run",
     "Python.app.executor": "Run",
@@ -107,8 +119,8 @@
       <recent name="$PROJECT_DIR$/.venv" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest for test_value.test_regex_osc_trigger">
-    <configuration name="pytest for test_osc.test_start_osc_client" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.pytest in test_osc.py">
+    <configuration name="pytest for test_scripting.test_check_condition" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -121,11 +133,11 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_osc.test_start_osc_client&quot;" />
+      <option name="_new_target" value="&quot;test_scripting.test_check_condition&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_value.test_parse_script_word" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest for test_scripting.test_eval_expression" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -138,11 +150,11 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_value.test_parse_script_word&quot;" />
+      <option name="_new_target" value="&quot;test_scripting.test_eval_expression&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_value.test_parse_value" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest in test_conditions.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -155,11 +167,11 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_value.test_parse_value&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_conditions.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_value.test_regex_osc_trigger" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest in test_osc.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -172,11 +184,11 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_value.test_regex_osc_trigger&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_osc.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest in test_value.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest in test_scripting.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -189,24 +201,24 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_value.py&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_scripting.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python tests.pytest for test_osc.test_start_osc_client" />
-      <item itemvalue="Python tests.pytest for test_value.test_parse_script_word" />
-      <item itemvalue="Python tests.pytest for test_value.test_parse_value" />
-      <item itemvalue="Python tests.pytest for test_value.test_regex_osc_trigger" />
-      <item itemvalue="Python tests.pytest in test_value.py" />
+      <item itemvalue="Python tests.pytest for test_scripting.test_check_condition" />
+      <item itemvalue="Python tests.pytest in test_conditions.py" />
+      <item itemvalue="Python tests.pytest in test_osc.py" />
+      <item itemvalue="Python tests.pytest in test_scripting.py" />
+      <item itemvalue="Python tests.pytest for test_scripting.test_eval_expression" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.pytest for test_value.test_regex_osc_trigger" />
-        <item itemvalue="Python tests.pytest in test_value.py" />
-        <item itemvalue="Python tests.pytest for test_value.test_parse_value" />
-        <item itemvalue="Python tests.pytest for test_value.test_parse_script_word" />
-        <item itemvalue="Python tests.pytest for test_osc.test_start_osc_client" />
+        <item itemvalue="Python tests.pytest in test_osc.py" />
+        <item itemvalue="Python tests.pytest in test_scripting.py" />
+        <item itemvalue="Python tests.pytest in test_conditions.py" />
+        <item itemvalue="Python tests.pytest for test_scripting.test_check_condition" />
+        <item itemvalue="Python tests.pytest for test_scripting.test_eval_expression" />
       </list>
     </recent_temporary>
   </component>
@@ -298,7 +310,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740069959037</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Completed osc_server.py, added internal documentation.">
+      <option name="closed" value="true" />
+      <created>1740070555035</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1740070555035</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -322,6 +342,7 @@
     <MESSAGE value="Refactored osc.py and tests, improved internal documentation." />
     <MESSAGE value="Completed osc.py refactor, internal docs, and testing." />
     <MESSAGE value="Completed value.py, added tests and internal documentation." />
-    <option name="LAST_COMMIT_MESSAGE" value="Completed value.py, added tests and internal documentation." />
+    <MESSAGE value="Completed osc_server.py, added internal documentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Completed osc_server.py, added internal documentation." />
   </component>
 </project>
