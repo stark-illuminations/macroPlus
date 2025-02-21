@@ -6,13 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Added chained eos queries, updated how variables and macros are stored to avoid conflicts.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/macros/40aeb6e4-8da7-4945-a0fe-8bee88d547da.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/macros/40aeb6e4-8da7-4945-a0fe-8bee88d547da.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/variables.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/variables.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/eos_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/eos_query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/macros.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/macros.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/value.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/value.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/static/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/static/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/static/js/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +86,7 @@
     "Python.value.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "add__eos__queries",
+    "git-widget-placeholder": "update__interface",
     "last_opened_file_path": "/Users/stark/Desktop/Code/macroPlus/macroPlus/src/config/backup_macros",
     "settings.editor.selected.configurable": "editor.preferences.fonts.default"
   }

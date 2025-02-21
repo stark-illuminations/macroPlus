@@ -7,9 +7,17 @@
 {% block body %}
     <div id="macro_list">
         <h2>Current Macros</h2>
-        <div class="macro_button" id=new_macro_button>Add New Macro</div>
+        <div class="macro_button" id=new_macro_button>
+            <div class="macro_button_content">
+                <p class="macro_button_title" id='new_macro_button_title'>Add New Macro</p>
+            </div>
+        </div>
         {% for macro in macro_list %}
-            <div class="macro_button" id={{macro["uuid"]}}>{{macro["name"]}}</div>
+            <div class="macro_button" id={{macro["uuid"]}}>
+                <div class="macro_button_content">
+                    <p class="macro_button_title" id='{{macro["uuid"]}}_title'>{{macro["name"]}}</p>
+                </div>
+            </div>
         {% endfor %}
     </div>
     <div id="macro_editor">
@@ -27,7 +35,7 @@
                     <label for="new_macro_arg_index">OSC Argument Input Index: </label>
                     <input type="text" id="new_macro_arg_index" name="macro_arg_index" value=""><br>
                     <label for="new_macro_action">Action: </label>
-                    <textarea cols="85" rows="29" id="new_macro_action" name="macro_action"></textarea>
+                    <textarea cols="85" rows="27" id="new_macro_action" name="macro_action"></textarea>
                 </form>
             </div>
         {% for macro in macro_list %}
