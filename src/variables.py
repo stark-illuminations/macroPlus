@@ -6,7 +6,6 @@ import datetime
 import value
 
 last_variable_access_time = datetime.datetime.now()
-variable_write_interval = 30
 
 def load_variables():
     """Load user variables from config file."""
@@ -32,7 +31,7 @@ def load_variables():
 
 def add_user_variable(variable_name, variable_value, user_variables, loaded_from_file=False, debug=False):
     """Add a new user variable with the given name and value"""
-    global last_variable_access_time, variable_write_interval
+    global last_variable_access_time
     if debug:
         print("Adding user variable!")
         print("Raw variable name: %s" % variable_name)
@@ -63,7 +62,7 @@ def add_user_variable(variable_name, variable_value, user_variables, loaded_from
             print("No duplicate found. Adding variable.")
         user_variables.append(InternalVar(variable_name, value.parse_value(variable_value, debug=debug)))
 
-        if not loaded_from_file and (datetime.datetime.now() - last_variable_access_time).total_seconds() > variable_write_interval:
+        if not loaded_from_file:
             with open("config/variables.xml", "r") as variable_file:
                 variable_tree = ET.parse(variable_file)
                 variable_root = variable_tree.getroot()
@@ -90,7 +89,7 @@ def add_user_variable(variable_name, variable_value, user_variables, loaded_from
 
 def delete_user_variable(variable_name, user_variables, debug=False):
     """Delete the user variable with the given name."""
-    global last_variable_access_time, variable_write_interval
+    global last_variable_access_time
 
     if debug:
         print("Deleting user variable: %s" % variable_name)
@@ -103,22 +102,21 @@ def delete_user_variable(variable_name, user_variables, debug=False):
             user_variables.pop(i)
             break
 
-    if (datetime.datetime.now() - last_variable_access_time).total_seconds() > variable_write_interval:
-        with open("config/variables.xml", "r") as variable_file:
-            if debug:
-                print("- Searching XML config for variable.")
-            variable_tree = ET.parse(variable_file)
-            variable_root = variable_tree.getroot()
-            variable_list = variable_root.findall("variable")
+    with open("config/variables.xml", "r") as variable_file:
+        if debug:
+            print("- Searching XML config for variable.")
+        variable_tree = ET.parse(variable_file)
+        variable_root = variable_tree.getroot()
+        variable_list = variable_root.findall("variable")
 
-            for variable in variable_list:
-                if variable.find("name").text == variable_name:
-                    if debug:
-                        print("-- User variable found in XML! Deleting.")
-                    variable_root.remove(variable)
-                    break
+        for variable in variable_list:
+            if variable.find("name").text == variable_name:
+                if debug:
+                    print("-- User variable found in XML! Deleting.")
+                variable_root.remove(variable)
+                break
 
-            variable_tree.write("config/variables.xml")
+        variable_tree.write("config/variables.xml")
 
     return user_variables
 
@@ -140,18 +138,16 @@ def set_user_variable(variable_name, new_value, user_variables, debug=False):
         if variable.name == variable_name:
             variable.set_value(value.parse_value(new_value, debug=debug))
 
+    with open("config/variables.xml", "r") as variable_file:
+        variable_tree = ET.parse(variable_file)
+        variable_root = variable_tree.getroot()
+        variable_list = variable_root.findall("variable")
 
-    if (datetime.datetime.now() - last_variable_access_time).total_seconds() > variable_write_interval:
-        with open("config/variables.xml", "r") as variable_file:
-            variable_tree = ET.parse(variable_file)
-            variable_root = variable_tree.getroot()
-            variable_list = variable_root.findall("variable")
+        for variable in variable_list:
+            if variable.find("name").text == variable_name:
+                variable.find("value").text = str(value.parse_value(new_value, debug=debug))
 
-            for variable in variable_list:
-                if variable.find("name").text == variable_name:
-                    variable.find("value").text = str(value.parse_value(new_value, debug=debug))
-
-            variable_tree.write("config/variables.xml")
+        variable_tree.write("config/variables.xml")
 
     return user_variables
 

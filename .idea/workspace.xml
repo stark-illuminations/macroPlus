@@ -4,15 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Completed osc_server.py, added internal documentation.">
-      <change afterPath="$PROJECT_DIR$/src/conditions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/tests/test_conditions.py" afterDir="false" />
+    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Split condition-related functions into conditions.py, updated tests, did a little cleaning on scripting.py">
+      <change afterPath="$PROJECT_DIR$/src/tests/test_variables.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/osc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/test_osc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_osc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/static/css/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tests/test_scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_scripting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +102,11 @@
     "git-widget-placeholder": "refactor__and__doc",
     "last_opened_file_path": "/Users/stark/Desktop/Code/macroPlus/macroPlus/src/config/backup_macros",
     "settings.editor.selected.configurable": "preferences.sourceCode.Python"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "Python"
+    ]
   }
 }]]></component>
   <component name="RecentsManager">
@@ -119,56 +121,27 @@
       <recent name="$PROJECT_DIR$/.venv" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest in test_osc.py">
-    <configuration name="pytest for test_scripting.test_check_condition" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.app">
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_scripting.test_check_condition&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pytest for test_scripting.test_eval_expression" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="macroPlus" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_scripting.test_eval_expression&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pytest in test_conditions.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="macroPlus" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_conditions.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <configuration name="pytest in test_osc.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
@@ -185,6 +158,23 @@
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_osc.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest in test_osc_server.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="macroPlus" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_osc_server.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
@@ -205,20 +195,37 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="pytest in test_value.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="macroPlus" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_value.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Python tests.pytest for test_scripting.test_check_condition" />
-      <item itemvalue="Python tests.pytest in test_conditions.py" />
+      <item itemvalue="Python.app" />
       <item itemvalue="Python tests.pytest in test_osc.py" />
+      <item itemvalue="Python tests.pytest in test_osc_server.py" />
       <item itemvalue="Python tests.pytest in test_scripting.py" />
-      <item itemvalue="Python tests.pytest for test_scripting.test_eval_expression" />
+      <item itemvalue="Python tests.pytest in test_value.py" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.app" />
+        <item itemvalue="Python tests.pytest in test_value.py" />
+        <item itemvalue="Python tests.pytest in test_osc_server.py" />
         <item itemvalue="Python tests.pytest in test_osc.py" />
         <item itemvalue="Python tests.pytest in test_scripting.py" />
-        <item itemvalue="Python tests.pytest in test_conditions.py" />
-        <item itemvalue="Python tests.pytest for test_scripting.test_check_condition" />
-        <item itemvalue="Python tests.pytest for test_scripting.test_eval_expression" />
       </list>
     </recent_temporary>
   </component>
@@ -318,7 +325,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740070555035</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Split condition-related functions into conditions.py, updated tests, did a little cleaning on scripting.py">
+      <option name="closed" value="true" />
+      <created>1740093288559</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1740093288559</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -343,6 +358,7 @@
     <MESSAGE value="Completed osc.py refactor, internal docs, and testing." />
     <MESSAGE value="Completed value.py, added tests and internal documentation." />
     <MESSAGE value="Completed osc_server.py, added internal documentation." />
-    <option name="LAST_COMMIT_MESSAGE" value="Completed osc_server.py, added internal documentation." />
+    <MESSAGE value="Split condition-related functions into conditions.py, updated tests, did a little cleaning on scripting.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Split condition-related functions into conditions.py, updated tests, did a little cleaning on scripting.py" />
   </component>
 </project>

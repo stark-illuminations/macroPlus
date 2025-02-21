@@ -267,3 +267,5 @@ def test_run_script():
                                 internal_variables, user_variables, dynamic_variables,
                                 eos_query_count=eos_query_count, arg_input=arg_input) == (
            "done", "", internal_macros)
+
+    # TODO: Write real tests. This will require breaking out opcodes into functions.
