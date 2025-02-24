@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Changed the style of macro buttons and added selected button indicator">
-      <change beforePath="$PROJECT_DIR$/src/tests/test_variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_variables.py" afterDir="false" />
+    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Documented variables.py">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/macros.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/macros.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,49 +65,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Python tests.pytest for test_osc.test_process_osc.executor": "Run",
-    "Python tests.pytest for test_osc.test_process_osc_address.executor": "Run",
-    "Python tests.pytest for test_osc.test_process_osc_args.executor": "Run",
-    "Python tests.pytest for test_osc.test_start_osc_client.executor": "Run",
-    "Python tests.pytest for test_osc_server.test_eos_out.executor": "Run",
-    "Python tests.pytest for test_osc_server.test_start_osc_server.executor": "Run",
-    "Python tests.pytest for test_scripting.test_check_condition.executor": "Run",
-    "Python tests.pytest for test_scripting.test_eval_expression.executor": "Run",
-    "Python tests.pytest for test_scripting.test_handle_endloop.executor": "Run",
-    "Python tests.pytest for test_scripting.test_handle_string_end.executor": "Run",
-    "Python tests.pytest for test_scripting.test_pre_process_script_line.executor": "Run",
-    "Python tests.pytest for test_scripting.test_run_script.executor": "Run",
-    "Python tests.pytest for test_value.test_parse_script_word.executor": "Run",
-    "Python tests.pytest for test_value.test_parse_value.executor": "Run",
-    "Python tests.pytest for test_value.test_regex_osc_trigger.executor": "Run",
-    "Python tests.pytest for test_variables.test_load_variables.executor": "Run",
-    "Python tests.pytest in test_conditions.py.executor": "Run",
-    "Python tests.pytest in test_osc.py.executor": "Run",
-    "Python tests.pytest in test_osc_server.py.executor": "Run",
-    "Python tests.pytest in test_scripting.py.executor": "Run",
-    "Python tests.pytest in test_value.py.executor": "Run",
-    "Python tests.pytest in tests.executor": "Run",
-    "Python.app.executor": "Run",
-    "Python.eos_query.executor": "Run",
-    "Python.funcion_fake.executor": "Run",
-    "Python.osc_server.executor": "Run",
-    "Python.scripting.executor": "Run",
-    "Python.value.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "refactor__and__doc",
-    "last_opened_file_path": "/Users/stark/Desktop/Code/macroPlus/macroPlus/src/config/backup_macros",
-    "settings.editor.selected.configurable": "preferences.sourceCode.Python"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python tests.pytest for test_osc.test_process_osc.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_osc.test_process_osc_address.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_osc.test_process_osc_args.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_osc.test_start_osc_client.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_osc_server.test_eos_out.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_osc_server.test_start_osc_server.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_scripting.test_check_condition.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_scripting.test_eval_expression.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_scripting.test_handle_endloop.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_scripting.test_handle_string_end.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_scripting.test_pre_process_script_line.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_scripting.test_run_script.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_value.test_parse_script_word.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_value.test_parse_value.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_value.test_regex_osc_trigger.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest for test_variables.test_load_variables.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest in test_conditions.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest in test_osc.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest in test_osc_server.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest in test_scripting.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest in test_value.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest in tests.executor&quot;: &quot;Run&quot;,
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.eos_query.executor&quot;: &quot;Run&quot;,
+    &quot;Python.funcion_fake.executor&quot;: &quot;Run&quot;,
+    &quot;Python.osc_server.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scripting.executor&quot;: &quot;Run&quot;,
+    &quot;Python.value.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;refactor__and__doc&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/stark/Desktop/Code/macroPlus/macroPlus/src/config/backup_macros&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.Python&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "Python"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;Python&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/config/backup_macros" />
@@ -330,7 +332,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740093288559</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Documented variables.py">
+      <option name="closed" value="true" />
+      <created>1740364907507</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1740364907507</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -356,6 +366,7 @@
     <MESSAGE value="Completed value.py, added tests and internal documentation." />
     <MESSAGE value="Completed osc_server.py, added internal documentation." />
     <MESSAGE value="Split condition-related functions into conditions.py, updated tests, did a little cleaning on scripting.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Split condition-related functions into conditions.py, updated tests, did a little cleaning on scripting.py" />
+    <MESSAGE value="Documented variables.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Documented variables.py" />
   </component>
 </project>

@@ -130,7 +130,7 @@ def run_macro(macro_uuid_to_run, osc_client, json_osc, user_macros, internal_mac
     for macro in internal_macros:
         if macro.uuid == macro_uuid_to_run:
             macro.last_fire_time = datetime.datetime.now()
-            run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
+            run_result = macro.run_action(osc_client,
                                                   internal_macros, internal_variables, user_variables,
                                                   dynamic_variables, mark_as_run=True, arg_input=requested_arg, has_eos_queries=has_eos_queries,
                                                   debug=debug)
@@ -142,7 +142,7 @@ def run_macro(macro_uuid_to_run, osc_client, json_osc, user_macros, internal_mac
     for macro in user_macros:
         if macro.uuid == macro_uuid_to_run:
             macro.last_fire_time = datetime.datetime.now()
-            run_result = macro.run_action(osc_client, json_osc["address"], json_osc["args"],
+            run_result = macro.run_action(osc_client,
                                                   internal_macros, internal_variables, user_variables,
                                                   dynamic_variables, mark_as_run=True, arg_input=requested_arg, has_eos_queries=has_eos_queries,
                                                   debug=debug)
