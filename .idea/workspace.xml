@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Split condition-related functions into conditions.py, updated tests, did a little cleaning on scripting.py">
-      <change afterPath="$PROJECT_DIR$/src/tests/test_variables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/static/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/test_scripting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_scripting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.py" afterDir="false" />
+    <list default="true" id="d72adb5a-3f47-419e-8f25-3ec9bc356a96" name="Changes" comment="Changed the style of macro buttons and added selected button indicator">
+      <change beforePath="$PROJECT_DIR$/src/tests/test_variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_variables.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,6 +81,7 @@
     "Python tests.pytest for test_value.test_parse_script_word.executor": "Run",
     "Python tests.pytest for test_value.test_parse_value.executor": "Run",
     "Python tests.pytest for test_value.test_regex_osc_trigger.executor": "Run",
+    "Python tests.pytest for test_variables.test_load_variables.executor": "Run",
     "Python tests.pytest in test_conditions.py.executor": "Run",
     "Python tests.pytest in test_osc.py.executor": "Run",
     "Python tests.pytest in test_osc_server.py.executor": "Run",
@@ -121,7 +118,7 @@
       <recent name="$PROJECT_DIR$/.venv" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.app">
+  <component name="RunManager" selected="Python tests.pytest for test_variables.test_load_variables">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
@@ -142,6 +139,23 @@
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_variables.test_load_variables" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="macroPlus" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_variables.test_load_variables&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="pytest in test_osc.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
@@ -178,23 +192,6 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest in test_scripting.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="macroPlus" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_scripting.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
     <configuration name="pytest in test_value.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="macroPlus" />
       <option name="ENV_FILES" value="" />
@@ -214,18 +211,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.app" />
+      <item itemvalue="Python tests.pytest for test_variables.test_load_variables" />
       <item itemvalue="Python tests.pytest in test_osc.py" />
       <item itemvalue="Python tests.pytest in test_osc_server.py" />
-      <item itemvalue="Python tests.pytest in test_scripting.py" />
       <item itemvalue="Python tests.pytest in test_value.py" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest for test_variables.test_load_variables" />
         <item itemvalue="Python.app" />
         <item itemvalue="Python tests.pytest in test_value.py" />
         <item itemvalue="Python tests.pytest in test_osc_server.py" />
         <item itemvalue="Python tests.pytest in test_osc.py" />
-        <item itemvalue="Python tests.pytest in test_scripting.py" />
       </list>
     </recent_temporary>
   </component>
